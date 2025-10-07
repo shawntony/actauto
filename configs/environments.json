@@ -44,6 +44,15 @@
       "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1GjeKgw6c7h5WW1Y8u-v3ixPG6LNX9owf5rZrho9zdkU",
       "description": "스마트비즈센터2 회계 관리 시스템",
       "debugMode": false
+    },
+    "smartbiz": {
+      "name": "스마트비즈센터",
+      "scriptId": "1BqdBMdXik2M0iHN0dEFBpwHwvlHLlYDkw_2gLSjZf5prgpK0tUUq3zNX",
+      "spreadsheetId": "1QNQwhOCU0fJpn19BkxpyNUi6bvdAYcgOIPTAM6rdwZ0",
+      "folderId": "18qMzl3qm1vsgERCkfp5xWPDRDQn7wjc7",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1QNQwhOCU0fJpn19BkxpyNUi6bvdAYcgOIPTAM6rdwZ0",
+      "description": "스마트비즈센터 회계 관리 시스템",
+      "debugMode": false
     }
   },
   "default": "development"
