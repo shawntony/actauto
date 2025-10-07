@@ -89,9 +89,12 @@ npm run env:setup
 프롬프트에 따라 다음 정보를 입력:
 1. 환경 키 (예: client1, project2)
 2. 환경 이름 (예: 고객사1, 프로젝트2)
-3. 스크립트 ID
-4. 스프레드시트 URL (선택)
-5. 설명 (선택)
+3. 스크립트 ID (Apps Script 프로젝트 설정에서 복사)
+4. 스프레드시트 ID (URL에서 추출: `/d/{SPREADSHEET_ID}/`)
+5. 폴더 ID (은행거래내역 업로드용 드라이브 폴더)
+6. 스프레드시트 URL (선택)
+7. 설명 (선택)
+8. 디버그 모드 활성화 여부 (y/n)
 
 #### 방법 2: 수동 설정
 
@@ -109,12 +112,17 @@ npm run env:setup
        "client1": {
          "name": "고객사1",
          "scriptId": "YOUR_SCRIPT_ID_HERE",
-         "spreadsheetUrl": "https://docs.google.com/spreadsheets/...",
-         "description": "고객사1 회계 시스템"
+         "spreadsheetId": "YOUR_SPREADSHEET_ID_HERE",
+         "folderId": "YOUR_FOLDER_ID_HERE",
+         "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID_HERE",
+         "description": "고객사1 회계 시스템",
+         "debugMode": true
        }
      }
    }
    ```
+
+   ⚠️ **중요**: 각 환경마다 `spreadsheetId`와 `folderId`를 반드시 설정해야 합니다.
 
 3. **Clasp 설정 파일 생성**
 

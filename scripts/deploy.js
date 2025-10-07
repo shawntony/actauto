@@ -50,6 +50,57 @@ if (args.includes('--list') || args.includes('-l')) {
 }
 
 /**
+ * config.js에 환경 설정 주입
+ */
+function injectConfig(envName, env) {
+  const configPath = path.join(__dirname, '../src/config.js');
+  let configContent = fs.readFileSync(configPath, 'utf8');
+
+  // 템플릿 변수 치환
+  const replacements = {
+    '{{ENVIRONMENT}}': envName,
+    '{{ENVIRONMENT_NAME}}': env.name,
+    '{{SPREADSHEET_ID}}': env.spreadsheetId || '',
+    '{{FOLDER_ID}}': env.folderId || '',
+    '{{SPREADSHEET_URL}}': env.spreadsheetUrl || '',
+    '{{DEBUG_MODE}}': env.debugMode ? 'true' : 'false'
+  };
+
+  Object.entries(replacements).forEach(([placeholder, value]) => {
+    configContent = configContent.replace(new RegExp(placeholder, 'g'), value);
+  });
+
+  // 임시 config 파일 생성 (배포 후 원복)
+  const tempConfigPath = path.join(__dirname, '../src/config.deploy.js');
+  fs.writeFileSync(tempConfigPath, configContent, 'utf8');
+
+  // 원본 백업
+  const backupPath = path.join(__dirname, '../src/config.backup.js');
+  fs.copyFileSync(configPath, backupPath);
+
+  // 배포용으로 교체
+  fs.copyFileSync(tempConfigPath, configPath);
+}
+
+/**
+ * config.js 원본 복구
+ */
+function restoreConfig() {
+  const configPath = path.join(__dirname, '../src/config.js');
+  const backupPath = path.join(__dirname, '../src/config.backup.js');
+  const tempConfigPath = path.join(__dirname, '../src/config.deploy.js');
+
+  if (fs.existsSync(backupPath)) {
+    fs.copyFileSync(backupPath, configPath);
+    fs.unlinkSync(backupPath);
+  }
+
+  if (fs.existsSync(tempConfigPath)) {
+    fs.unlinkSync(tempConfigPath);
+  }
+}
+
+/**
  * 특정 환경에 배포
  */
 function deployToEnvironment(envName) {
@@ -64,7 +115,11 @@ function deployToEnvironment(envName) {
   console.log(`   스크립트 ID: ${env.scriptId}`);
 
   try {
-    // .clasp.json 파일 생성
+    // 1. config.js 파일에 환경 설정 주입
+    console.log('   환경 설정 주입 중...');
+    injectConfig(envName, env);
+
+    // 2. .clasp.json 파일 생성
     const claspConfigPath = path.join(__dirname, '../.clasp.json');
     const claspTemplatePath = path.join(__dirname, `../configs/clasp-${envName}.json`);
 
@@ -75,7 +130,7 @@ function deployToEnvironment(envName) {
       console.log(`   기본 설정을 사용합니다.`);
     }
 
-    // clasp push 실행
+    // 3. clasp push 실행
     console.log('   코드 푸시 중...');
     const result = execSync('npx clasp push', {
       cwd: path.join(__dirname, '..'),
@@ -89,9 +144,17 @@ function deployToEnvironment(envName) {
       console.log(`   스프레드시트: ${env.spreadsheetUrl}`);
     }
 
+    // 4. config.js 원복
+    console.log('   환경 설정 원복 중...');
+    restoreConfig();
+
     return true;
   } catch (error) {
     console.error(`❌ ${env.name} 배포 실패:`, error.message);
+
+    // 에러 발생 시에도 config.js 원복
+    restoreConfig();
+
     return false;
   }
 }

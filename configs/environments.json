@@ -3,20 +3,29 @@
     "production": {
       "name": "프로덕션 환경",
       "scriptId": "1v9nS8uWn9PWUltTR05AMVJL9mFwlsNZakRimiKGuASwRtqkGIoLguZMi",
-      "spreadsheetUrl": "YOUR_PRODUCTION_SPREADSHEET_URL",
-      "description": "실제 운영 환경"
+      "spreadsheetId": "1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8",
+      "folderId": "1m-a9B-1SNfiq4NiAqftWJSBammq0bvVR",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8",
+      "description": "실제 운영 환경",
+      "debugMode": false
     },
     "development": {
       "name": "개발 환경",
       "scriptId": "YOUR_DEV_SCRIPT_ID_HERE",
+      "spreadsheetId": "YOUR_DEV_SPREADSHEET_ID_HERE",
+      "folderId": "YOUR_DEV_FOLDER_ID_HERE",
       "spreadsheetUrl": "YOUR_DEV_SPREADSHEET_URL",
-      "description": "개발 및 테스트 환경"
+      "description": "개발 및 테스트 환경",
+      "debugMode": true
     },
     "testing": {
       "name": "테스트 환경",
       "scriptId": "YOUR_TEST_SCRIPT_ID_HERE",
+      "spreadsheetId": "YOUR_TEST_SPREADSHEET_ID_HERE",
+      "folderId": "YOUR_TEST_FOLDER_ID_HERE",
       "spreadsheetUrl": "YOUR_TEST_SPREADSHEET_URL",
-      "description": "QA 테스트 환경"
+      "description": "QA 테스트 환경",
+      "debugMode": true
     }
   },
   "default": "development"

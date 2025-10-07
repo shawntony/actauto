@@ -27,8 +27,11 @@ async function setupNewEnvironment() {
   const envKey = await question('환경 키 (예: client1, project2): ');
   const envName = await question('환경 이름 (예: 고객사1, 프로젝트2): ');
   const scriptId = await question('스크립트 ID: ');
+  const spreadsheetId = await question('스프레드시트 ID: ');
+  const folderId = await question('폴더 ID (은행거래내역 업로드용): ');
   const spreadsheetUrl = await question('스프레드시트 URL (선택사항): ');
   const description = await question('설명 (선택사항): ');
+  const debugMode = await question('디버그 모드 활성화? (y/n, 기본: y): ');
 
   // 환경 설정 파일 업데이트
   const environmentsPath = path.join(__dirname, '../configs/environments.json');
@@ -37,8 +40,11 @@ async function setupNewEnvironment() {
   environments.environments[envKey] = {
     name: envName,
     scriptId: scriptId,
-    spreadsheetUrl: spreadsheetUrl || `https://docs.google.com/spreadsheets/...`,
-    description: description || `${envName} 환경`
+    spreadsheetId: spreadsheetId,
+    folderId: folderId,
+    spreadsheetUrl: spreadsheetUrl || `https://docs.google.com/spreadsheets/d/${spreadsheetId}`,
+    description: description || `${envName} 환경`,
+    debugMode: !debugMode || debugMode.toLowerCase() === 'y' || debugMode.toLowerCase() === 'yes'
   };
 
   fs.writeFileSync(
