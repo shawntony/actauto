@@ -1,6 +1,6 @@
 {
   "scriptId": "YOUR_TEST_SCRIPT_ID_HERE",
-  "rootDir": "",
+  "rootDir": "src",
   "scriptExtensions": [
     ".js",
     ".gs"

@@ -1,12 +1,12 @@
 {
   "environments": {
     "production": {
-      "name": "프로덕션 환경",
+      "name": "유니스",
       "scriptId": "1v9nS8uWn9PWUltTR05AMVJL9mFwlsNZakRimiKGuASwRtqkGIoLguZMi",
       "spreadsheetId": "1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8",
       "folderId": "1m-a9B-1SNfiq4NiAqftWJSBammq0bvVR",
       "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8",
-      "description": "실제 운영 환경",
+      "description": "유니스 회계 관리 시스템",
       "debugMode": false
     },
     "development": {
