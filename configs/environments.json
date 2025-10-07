@@ -1,0 +1,23 @@
+{
+  "environments": {
+    "production": {
+      "name": "프로덕션 환경",
+      "scriptId": "1v9nS8uWn9PWUltTR05AMVJL9mFwlsNZakRimiKGuASwRtqkGIoLguZMi",
+      "spreadsheetUrl": "YOUR_PRODUCTION_SPREADSHEET_URL",
+      "description": "실제 운영 환경"
+    },
+    "development": {
+      "name": "개발 환경",
+      "scriptId": "YOUR_DEV_SCRIPT_ID_HERE",
+      "spreadsheetUrl": "YOUR_DEV_SPREADSHEET_URL",
+      "description": "개발 및 테스트 환경"
+    },
+    "testing": {
+      "name": "테스트 환경",
+      "scriptId": "YOUR_TEST_SCRIPT_ID_HERE",
+      "spreadsheetUrl": "YOUR_TEST_SPREADSHEET_URL",
+      "description": "QA 테스트 환경"
+    }
+  },
+  "default": "development"
+}

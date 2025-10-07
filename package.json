@@ -7,8 +7,14 @@
     "push": "clasp push",
     "pull": "clasp pull",
     "open": "clasp open",
-    "deploy": "clasp deploy",
-    "logs": "clasp logs"
+    "logs": "clasp logs",
+    "deploy": "node scripts/deploy.js",
+    "deploy:prod": "node scripts/deploy.js production",
+    "deploy:dev": "node scripts/deploy.js development",
+    "deploy:test": "node scripts/deploy.js testing",
+    "deploy:all": "node scripts/deploy.js all",
+    "env:list": "node scripts/deploy.js --list",
+    "env:setup": "node scripts/setup-new-environment.js"
   },
   "keywords": [
     "google-apps-script",
