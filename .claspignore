@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+package-lock.json
+
+# Scripts and configs (local only)
+scripts/
+configs/
+
+# Git files
+.git/
+.gitignore
+
+# Documentation
+README.md
+claudedocs/
+
+# Environment files
+.env
+.env.*
+
+# Build and temp files
+*.log
+*.tmp
+.DS_Store
+
+# Backup files
+*.backup.js
+*.deploy.js

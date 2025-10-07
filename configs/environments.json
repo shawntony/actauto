@@ -26,6 +26,15 @@
       "spreadsheetUrl": "YOUR_TEST_SPREADSHEET_URL",
       "description": "QA 테스트 환경",
       "debugMode": true
+    },
+    "smartbiz1": {
+      "name": "스마트비즈센터1",
+      "scriptId": "19-Z-X-TnxQ_z0yFPhORxXIyn45BdFpPrxdlh92pjfrC5UbQnjoDRkERj",
+      "spreadsheetId": "1xmrR4KLWf2S7J4IQgHrJiIUEb4PCC9aUI7Mwbq29PcU",
+      "folderId": "15lo0lW70XABZYWk5E7Fzm3Gk0hn3oB3K",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1xmrR4KLWf2S7J4IQgHrJiIUEb4PCC9aUI7Mwbq29PcU",
+      "description": "스마트비즈센터1 회계 관리 시스템",
+      "debugMode": false
     }
   },
   "default": "development"

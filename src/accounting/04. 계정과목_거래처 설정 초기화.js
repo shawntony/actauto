@@ -1,7 +1,3 @@
-const SPREADSHEET_ID = '1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8';
-const FOLDER_ID = '1m-a9B-1SNfiq4NiAqftWJSBammq0bvVR';
-
-
 function clearF2toHColumnInConfig() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const configSheet = ss.getSheetByName('설정');
