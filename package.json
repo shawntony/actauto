@@ -1,0 +1,27 @@
+{
+  "name": "actauto",
+  "version": "1.0.0",
+  "description": "회계 및 급여 관리 자동화 시스템 (Google Apps Script)",
+  "main": "index.js",
+  "scripts": {
+    "push": "clasp push",
+    "pull": "clasp pull",
+    "open": "clasp open",
+    "deploy": "clasp deploy",
+    "logs": "clasp logs"
+  },
+  "keywords": [
+    "google-apps-script",
+    "accounting",
+    "payroll",
+    "automation",
+    "spreadsheet"
+  ],
+  "author": "gram <y0163824619@gmail.com>",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@google/clasp": "^3.0.6-alpha",
+    "@types/google-apps-script": "^2.0.5"
+  }
+}
