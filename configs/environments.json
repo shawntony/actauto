@@ -53,6 +53,15 @@
       "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1QNQwhOCU0fJpn19BkxpyNUi6bvdAYcgOIPTAM6rdwZ0",
       "description": "스마트비즈센터 회계 관리 시스템",
       "debugMode": false
+    },
+    "kjy": {
+      "name": "케이제이와이",
+      "scriptId": "18Qis4WUXY3NNQvXUH-MgIPF3SlqVvqp-njznfWMI7IUfsJhbUjhAupkH",
+      "spreadsheetId": "1-gOcefZlaoDuLpIvt2LGednjbdYKmOSou25-j3_hrAI",
+      "folderId": "1lOZHVrnPFJIog7hTPFgVIFCiareZVj8F",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1-gOcefZlaoDuLpIvt2LGednjbdYKmOSou25-j3_hrAI/edit",
+      "description": "케이제이와이 회계 관리 시스템",
+      "debugMode": false
     }
   },
   "default": "development"
