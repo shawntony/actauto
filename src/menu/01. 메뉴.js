@@ -16,6 +16,8 @@ function onOpen() {
           .addItem('6. 수작업 거래 추출', 'findAndMoveData_V14')) 
       .addSeparator() 
       .addSubMenu(ui.createMenu('데이터 후처리')
+          // 🌟 새로운 '0. 부가세 거래 검증' 메뉴가 추가되었습니다.
+          .addItem('0. 부가세 거래 검증', 'applyVATTaxCalculation')
           .addItem('1. 거래검증완료 데이터 환원', 'moveVerifiedTransactions')) 
       .addSeparator() 
       .addSubMenu(ui.createMenu('분개')      
@@ -30,14 +32,13 @@ function onOpen() {
       .addSeparator() 
       .addToUi(); 
 
-  // 2. '도구 관리' 메뉴 정의 (새 항목 추가)
+  // 2. '도구 관리' 메뉴 정의 
   ui.createMenu('도구 관리')
       .addItem('새 탭 열기', 'openNewTabWithCurrentSheet')
       .addItem('세금시트 열기/숨기기', 'toggleTaxSheetsVisibility') 
       .addItem('세금계산서 시트 열기/숨기기', 'toggleInvoiceSheetsVisibility')
       .addItem('급여 관리 열기/숨기기', 'togglePayrollSheetsVisibility')
       .addItem('설정 열기/숨기기', 'toggleConfigSheetVisibility') 
-      // 🌟 새로운 '거래Backup 열기/숨기기' 항목 추가
       .addItem('거래Backup 열기/숨기기', 'toggleTransactionBackupSheetVisibility') 
       .addToUi(); 
       

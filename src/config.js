@@ -8,22 +8,22 @@
 // 환경 설정 - 배포 스크립트에서 자동 주입됨
 const CONFIG = {
   // 현재 환경 (production, development, testing 등)
-  ENVIRONMENT: 'smartbiz',
+  ENVIRONMENT: '{{ENVIRONMENT}}',
 
   // 스프레드시트 ID
-  SPREADSHEET_ID: '1QNQwhOCU0fJpn19BkxpyNUi6bvdAYcgOIPTAM6rdwZ0',
+  SPREADSHEET_ID: '{{SPREADSHEET_ID}}',
 
   // 구글 드라이브 폴더 ID (은행거래내역 업로드용)
-  FOLDER_ID: '18qMzl3qm1vsgERCkfp5xWPDRDQn7wjc7',
+  FOLDER_ID: '{{FOLDER_ID}}',
 
   // 스프레드시트 URL (참조용)
-  SPREADSHEET_URL: 'https://docs.google.com/spreadsheets/d/1QNQwhOCU0fJpn19BkxpyNUi6bvdAYcgOIPTAM6rdwZ0',
+  SPREADSHEET_URL: '{{SPREADSHEET_URL}}',
 
   // 환경 이름
-  ENVIRONMENT_NAME: '스마트비즈센터',
+  ENVIRONMENT_NAME: '{{ENVIRONMENT_NAME}}',
 
   // 디버그 모드 (개발/테스트 환경에서만 활성화)
-  DEBUG_MODE: 'false' === 'true'
+  DEBUG_MODE: '{{DEBUG_MODE}}' === 'true'
 };
 
 // 설정 검증 함수
