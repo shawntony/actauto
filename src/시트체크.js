@@ -2,28 +2,14 @@
  * 모든 환경의 시트 목록을 확인하는 스크립트
  *
  * 사용법:
- * 이 스크립트를 Apps Script 편집기에 복사해서 실행
+ * 1. shared/config.js 파일을 먼저 Apps Script 프로젝트에 포함
+ * 2. 이 스크립트를 Apps Script 편집기에 복사해서 실행
+ *
+ * 참고: 환경 설정은 shared/config.js에서 관리됩니다
  */
 
-// 환경 설정
-const SPREADSHEETS = [
-  {
-    id: '1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8',
-    name: '유니스 (소스)'
-  },
-  {
-    id: '1QNQwhOCU0fJpn19BkxpyNUi6bvdAYcgOIPTAM6rdwZ0',
-    name: '스마트비즈센터'
-  },
-  {
-    id: '1xmrR4KLWf2S7J4IQgHrJiIUEb4PCC9aUI7Mwbq29PcU',
-    name: '스마트비즈센터1'
-  },
-  {
-    id: '1GjeKgw6c7h5WW1Y8u-v3ixPG6LNX9owf5rZrho9zdkU',
-    name: '스마트비즈센터2'
-  }
-];
+// 환경 설정 (shared/config.js에서 가져옴)
+const SPREADSHEETS = getAllSpreadsheets();
 
 function checkAllSheets() {
   Logger.log('='.repeat(70));
