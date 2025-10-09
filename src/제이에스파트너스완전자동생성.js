@@ -93,30 +93,18 @@ function create제이에스파트너스완전자동() {
         if (!targetSheet) {
           targetSheet = spreadsheet.insertSheet(sheetName);
           Logger.log(`  ✅ 시트 생성`);
-          Utilities.sleep(300);
+          DelayUtils.afterSheetCreation();
         }
 
         // 1행 데이터 및 서식 복사
-        const row1Range = sourceSheet.getRange(1, 1, 1, lastColumn);
-        const row1Values = row1Range.getValues();
-        const row1Formats = row1Range.getNumberFormats();
-        const row1FontWeights = row1Range.getFontWeights();
-        const row1FontColors = row1Range.getFontColors();
-        const row1Backgrounds = row1Range.getBackgrounds();
-        const row1HorizontalAlignments = row1Range.getHorizontalAlignments();
+        const row1Data = getCompleteRowData(sourceSheet, 1);
+        if (row1Data) {
+          setCompleteRowData(targetSheet, 1, row1Data);
+          Logger.log(`  ✅ 1행 복사 완료 (${row1Data.columnCount}개 열)`);
+        }
 
-        const targetRange = targetSheet.getRange(1, 1, 1, lastColumn);
-        targetRange.setValues(row1Values);
-        targetRange.setNumberFormats(row1Formats);
-        targetRange.setFontWeights(row1FontWeights);
-        targetRange.setFontColors(row1FontColors);
-        targetRange.setBackgrounds(row1Backgrounds);
-        targetRange.setHorizontalAlignments(row1HorizontalAlignments);
-
-        Logger.log(`  ✅ 1행 복사 완료 (${lastColumn}개 열)`);
         successCount++;
-
-        Utilities.sleep(200);
+        DelayUtils.short();
 
       } catch (error) {
         Logger.log(`  ❌ 오류: ${error.message}`);
@@ -125,14 +113,10 @@ function create제이에스파트너스완전자동() {
     });
 
     // 기본 시트 삭제 (Sheet1이 있으면)
-    try {
-      const defaultSheet = spreadsheet.getSheetByName('Sheet1');
-      if (defaultSheet && spreadsheet.getSheets().length > 1) {
-        spreadsheet.deleteSheet(defaultSheet);
+    if (spreadsheet.getSheets().length > 1) {
+      if (deleteSheetIfExists(spreadsheet, 'Sheet1')) {
         Logger.log('\n🗑️  기본 Sheet1 삭제');
       }
-    } catch (e) {
-      // 무시
     }
 
     // 결과 요약
@@ -168,29 +152,20 @@ function create제이에스파트너스완전자동() {
     Logger.log('');
 
     // 완료 이메일 발송
-    const email = Session.getActiveUser().getEmail();
-    if (email) {
-      MailApp.sendEmail({
-        to: email,
-        subject: '✅ 제이에스파트너스 환경 생성 완료',
-        body: `제이에스파트너스 환경이 성공적으로 생성되었습니다!\n\n` +
-              `📊 작업 결과:\n` +
-              `총 시트: ${sourceSheets.length}개\n` +
-              `✅ 성공: ${successCount}개\n` +
-              `⊘ 건너뜀: ${skipCount}개\n` +
-              `❌ 실패: ${failCount}개\n\n` +
-              `📋 생성된 정보:\n` +
-              `스프레드시트 ID: ${spreadsheetId}\n` +
-              `폴더 ID: ${folderId}\n` +
-              `URL: ${spreadsheetUrl}\n\n` +
-              `다음 단계:\n` +
-              `1. 스프레드시트 열기: ${spreadsheetUrl}\n` +
-              `2. 확장 프로그램 > Apps Script\n` +
-              `3. 설정 > 스크립트 ID 복사\n` +
-              `4. Claude Code에 정보 전달\n\n` +
-              `완료 시간: ${new Date().toLocaleString('ko-KR')}`
-      });
-    }
+    NotificationUtils.success(
+      '제이에스파트너스 환경 생성 완료',
+      `제이에스파트너스 환경이 성공적으로 생성되었습니다!`,
+      {
+        '총 시트': `${sourceSheets.length}개`,
+        '성공': `${successCount}개`,
+        '건너뜀': `${skipCount}개`,
+        '실패': `${failCount}개`,
+        '스프레드시트 ID': spreadsheetId,
+        '폴더 ID': folderId,
+        'URL': spreadsheetUrl,
+        '다음 단계': '1. 스프레드시트 열기 → 2. 확장 프로그램 > Apps Script → 3. 스크립트 ID 복사'
+      }
+    );
 
     return {
       success: true,
