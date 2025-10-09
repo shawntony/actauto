@@ -1,8 +1,0 @@
-이제 아래 환경도 완전 자동으로 만들어 주세요
-환경이름 : KH패밀리오피스
-폴더 : 내드라이버>법이관리스재무관리>KH패밀리오피스>은행거래내역
-스프레드시트 생성 : KH패밀리오피스 폴더 내에서 생성
-스프레드시트 파일 이름 : 법인재무관리_KH패밀리오피스
-
- cd C:\Users\gram\myautomation\actauto
-  node scripts/create-new-environment.js <chc> <씨에이치씨> "씨에이치씨 회계시스템"
