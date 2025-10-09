@@ -129,17 +129,12 @@ function create케이제이와이환경() {
   }
 }
 
-/**
- * 폴더 이름으로 폴더 찾기
- */
+// 헬퍼 함수들
 function getFolderByName(parentFolder, folderName) {
   const folders = parentFolder.getFoldersByName(folderName);
   return folders.hasNext() ? folders.next() : null;
 }
 
-/**
- * 스프레드시트 이름으로 찾기
- */
 function getSpreadsheetByName(folder, name) {
   const files = folder.getFilesByName(name);
   if (files.hasNext()) {

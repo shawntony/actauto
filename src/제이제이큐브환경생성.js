@@ -115,32 +115,19 @@ function create제이제이큐브완전자동() {
         if (!targetSheet) {
           targetSheet = spreadsheet.insertSheet(sheetName);
           Logger.log(`  ✅ 시트 생성`);
-          Utilities.sleep(300);
+          DelayUtils.afterSheetCreation();
         } else {
           Logger.log(`  ✓ 시트 이미 존재`);
         }
 
-        // 1행 데이터 및 서식 복사
-        const row1Range = sourceSheet.getRange(1, 1, 1, lastColumn);
-        const row1Values = row1Range.getValues();
-        const row1Formats = row1Range.getNumberFormats();
-        const row1FontWeights = row1Range.getFontWeights();
-        const row1FontColors = row1Range.getFontColors();
-        const row1Backgrounds = row1Range.getBackgrounds();
-        const row1HorizontalAlignments = row1Range.getHorizontalAlignments();
+        const row1Data = getCompleteRowData(sourceSheet, 1);
+        if (row1Data) {
+          setCompleteRowData(targetSheet, 1, row1Data);
+          Logger.log(`  ✅ 1행 복사 완료 (${row1Data.columnCount}개 열)`);
+        }
 
-        const targetRange = targetSheet.getRange(1, 1, 1, lastColumn);
-        targetRange.setValues(row1Values);
-        targetRange.setNumberFormats(row1Formats);
-        targetRange.setFontWeights(row1FontWeights);
-        targetRange.setFontColors(row1FontColors);
-        targetRange.setBackgrounds(row1Backgrounds);
-        targetRange.setHorizontalAlignments(row1HorizontalAlignments);
-
-        Logger.log(`  ✅ 1행 복사 완료 (${lastColumn}개 열)`);
         successCount++;
-
-        Utilities.sleep(200);
+        DelayUtils.short();
 
       } catch (error) {
         Logger.log(`  ❌ 오류: ${error.message}`);
@@ -149,14 +136,10 @@ function create제이제이큐브완전자동() {
     });
 
     // 기본 시트 삭제
-    try {
-      const defaultSheet = spreadsheet.getSheetByName('Sheet1');
-      if (defaultSheet && spreadsheet.getSheets().length > 1) {
-        spreadsheet.deleteSheet(defaultSheet);
+    if (spreadsheet.getSheets().length > 1) {
+      if (deleteSheetIfExists(spreadsheet, 'Sheet1')) {
         Logger.log('\n🗑️  기본 Sheet1 삭제');
       }
-    } catch (e) {
-      // 무시
     }
 
     // 결과 요약
@@ -210,17 +193,12 @@ function create제이제이큐브완전자동() {
   }
 }
 
-/**
- * 폴더 이름으로 폴더 찾기
- */
+// 헬퍼 함수들
 function getFolderByName(parentFolder, folderName) {
   const folders = parentFolder.getFoldersByName(folderName);
   return folders.hasNext() ? folders.next() : null;
 }
 
-/**
- * 스프레드시트 이름으로 찾기
- */
 function getSpreadsheetByName(folder, name) {
   const files = folder.getFilesByName(name);
   if (files.hasNext()) {
