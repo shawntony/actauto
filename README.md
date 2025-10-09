@@ -720,6 +720,75 @@ eaa189b - Refactor remaining 4 environment creation scripts
 - 버그 발견 및 수정 (리팩토링 과정에서 2개 버그 수정)
 - 가독성 향상 (복잡한 로직 → 명확한 함수 호출)
 
+### Phase 3: 인프라 개선 (2024년)
+
+**목표**: 문서화, 추가 유틸리티, 테스트 프레임워크, 설정 중앙화
+
+**Phase 3-1: README 문서화**
+- 542줄의 상세한 유틸리티 모듈 문서 추가
+- 개발 가이드 및 코딩 패턴 4개 문서화
+- Phase 1-2 리팩토링 히스토리 정리
+
+**Phase 3-2: 추가 유틸리티 모듈 개발 (3개 모듈, 72개 함수)**
+1. `uiUtils.js` (292줄, 21 함수) - UI 상호작용 표준화
+   - Alert, confirm, prompt 래퍼
+   - Toast 알림 시스템 (success, error, warning, info)
+   - 진행 상황 toast, 사이드바, 모달 지원
+
+2. `validationUtils.js` (384줄, 20 함수) - 데이터 검증 중앙화
+   - 기본 검증 (isEmpty, requireFields)
+   - 형식 검증 (email, phone, businessNumber, date, URL)
+   - 복합 검증 (다중 필드 검증 엔진)
+
+3. `driveUtils.js` (434줄, 31 함수) - Drive 작업 통합
+   - 폴더 관리 (생성, 검색, 삭제)
+   - 파일 작업 (복사, 이동, 이름 변경, 삭제)
+   - 공유 및 권한 관리
+   - 파일 메타데이터 유틸리티
+
+**Phase 3-3: 테스트 프레임워크 구축**
+1. `testUtils.js` (361줄) - Apps Script용 테스트 프레임워크
+   - describe/it/skip 패턴 구현
+   - 18개 assertion 함수
+   - 테스트 리포트 생성 (통과율, 실패 상세)
+
+2. `validationUtils.test.js` (263줄, 40+ 테스트)
+   - ValidationUtils 전체 기능 테스트 커버리지
+   - 통합 시나리오 테스트
+
+3. `TESTING.md` (326줄) - 테스트 작성 가이드
+   - 전체 assertion 함수 문서화
+   - 모범 사례 및 실행 방법
+
+**Phase 3-4: 설정 중앙화**
+- `config.js` 확장 (89줄 → 130줄)
+- `SHEET_NAMES`: 공통 시트 이름 상수
+- `DELAY_CONFIG`: 표준화된 지연 시간 설정
+- `NOTIFICATION_CONFIG`: 이메일 알림 설정
+- `SOURCE_SPREADSHEET_ID`: 소스 스프레드시트 ID 중앙화
+
+**Phase 3-5: 기존 스크립트 리팩토링 샘플**
+- 2개 accounting 스크립트에 UIUtils 적용
+- `SpreadsheetApp.getUi().alert()` → `UIUtils.alert()` / `UIUtils.toastSuccess()`
+- 에러 처리 개선: `UIUtils.alertError()`로 통일
+- 향후 다른 스크립트도 동일 패턴 적용 가능
+
+**Git 커밋 기록**:
+```
+7ec2ebe - docs(readme): Phase 3-1 완료 - 유틸리티 모듈 완전 문서화
+70c11a6 - feat(utils): Phase 3-2 완료 - uiUtils, validationUtils, driveUtils 추가
+1eabc75 - test: Phase 3-3 완료 - 테스트 프레임워크 및 가이드 추가
+cb22627 - feat(config): Phase 3-4 완료 - 설정 중앙화
+8576c2d - refactor(accounting): Phase 3-5 샘플 - UIUtils 적용
+```
+
+**성과**:
+- **문서화**: 상세한 유틸리티 문서로 신규 개발자 온보딩 시간 단축
+- **코드 품질**: 72개 새로운 유틸리티 함수로 코드 재사용성 극대화
+- **테스트 인프라**: Apps Script 환경에서 테스트 가능 (18개 assertion 함수)
+- **설정 관리**: 중앙화된 설정으로 환경 변경 시 단일 파일만 수정
+- **UI 일관성**: 표준화된 UI 인터랙션으로 사용자 경험 통일
+
 ---
 
 ## 🔧 개발
