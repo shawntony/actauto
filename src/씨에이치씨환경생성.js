@@ -18,10 +18,10 @@ function create씨에이치씨완전자동() {
     Logger.log('📁 Step 1: 폴더 구조 생성');
 
     const myDrive = DriveApp.getRootFolder();
-    let 법인관리 = getFolderByName_CHC(myDrive, '법인관리') || myDrive.createFolder('법인관리');
-    let 재무관리 = getFolderByName_CHC(법인관리, '재무관리') || 법인관리.createFolder('재무관리');
-    let 법인폴더 = getFolderByName_CHC(재무관리, 법인이름) || 재무관리.createFolder(법인이름);
-    let 은행거래내역 = getFolderByName_CHC(법인폴더, '은행거래내역') || 법인폴더.createFolder('은행거래내역');
+    let 법인관리 = getFolderByName(myDrive, '법인관리') || myDrive.createFolder('법인관리');
+    let 재무관리 = getFolderByName(법인관리, '재무관리') || 법인관리.createFolder('재무관리');
+    let 법인폴더 = getFolderByName(재무관리, 법인이름) || 재무관리.createFolder(법인이름);
+    let 은행거래내역 = getFolderByName(법인폴더, '은행거래내역') || 법인폴더.createFolder('은행거래내역');
 
     const folderId = 은행거래내역.getId();
     Logger.log(`✅ 폴더 구조 생성 완료`);
@@ -31,7 +31,7 @@ function create씨에이치씨완전자동() {
     Logger.log('📊 Step 2: 스프레드시트 생성');
 
     const spreadsheetName = `법인재무관리_${법인이름}`;
-    let spreadsheet = getSpreadsheetByName_CHC(법인폴더, spreadsheetName);
+    let spreadsheet = getSpreadsheetByName(법인폴더, spreadsheetName);
 
     if (!spreadsheet) {
       spreadsheet = SpreadsheetApp.create(spreadsheetName);
@@ -84,30 +84,18 @@ function create씨에이치씨완전자동() {
         if (!targetSheet) {
           targetSheet = spreadsheet.insertSheet(sheetName);
           Logger.log(`  ✅ 시트 생성`);
-          Utilities.sleep(300);
+          DelayUtils.afterSheetCreation();
         }
 
         // 1행 데이터 및 서식 복사
-        const row1Range = sourceSheet.getRange(1, 1, 1, lastColumn);
-        const row1Values = row1Range.getValues();
-        const row1Formats = row1Range.getNumberFormats();
-        const row1FontWeights = row1Range.getFontWeights();
-        const row1FontColors = row1Range.getFontColors();
-        const row1Backgrounds = row1Range.getBackgrounds();
-        const row1HorizontalAlignments = row1Range.getHorizontalAlignments();
+        const row1Data = getCompleteRowData(sourceSheet, 1);
+        if (row1Data) {
+          setCompleteRowData(targetSheet, 1, row1Data);
+          Logger.log(`  ✅ 1행 복사 완료 (${row1Data.columnCount}개 열)`);
+        }
 
-        const targetRange = targetSheet.getRange(1, 1, 1, lastColumn);
-        targetRange.setValues(row1Values);
-        targetRange.setNumberFormats(row1Formats);
-        targetRange.setFontWeights(row1FontWeights);
-        targetRange.setFontColors(row1FontColors);
-        targetRange.setBackgrounds(row1Backgrounds);
-        targetRange.setHorizontalAlignments(row1HorizontalAlignments);
-
-        Logger.log(`  ✅ 1행 복사 완료 (${lastColumn}개 열)`);
         successCount++;
-
-        Utilities.sleep(200);
+        DelayUtils.short();
 
       } catch (error) {
         Logger.log(`  ❌ 오류: ${error.message}`);
@@ -116,20 +104,16 @@ function create씨에이치씨완전자동() {
     });
 
     // 기본 시트 삭제
-    try {
-      const defaultSheet = spreadsheet.getSheetByName('Sheet1');
-      if (defaultSheet && spreadsheet.getSheets().length > 1) {
-        spreadsheet.deleteSheet(defaultSheet);
+    if (spreadsheet.getSheets().length > 1) {
+      if (deleteSheetIfExists(spreadsheet, 'Sheet1')) {
         Logger.log('\n🗑️  기본 Sheet1 삭제');
       }
-    } catch (e) {
-      // 무시
     }
 
     // 결과 요약
     Logger.log('');
     Logger.log('='.repeat(70));
-    Logger.log(`✅ ${companyName} 환경 생성 완료!`);
+    Logger.log(`✅ ${법인이름} 환경 생성 완료!`);
     Logger.log('='.repeat(70));
     Logger.log('');
     Logger.log('📊 작업 결과:');
@@ -184,13 +168,13 @@ function create씨에이치씨완전자동() {
   }
 }
 
-// 헬퍼 함수들 (CHC 전용)
-function getFolderByName_CHC(parentFolder, folderName) {
+// 헬퍼 함수들
+function getFolderByName(parentFolder, folderName) {
   const folders = parentFolder.getFoldersByName(folderName);
   return folders.hasNext() ? folders.next() : null;
 }
 
-function getSpreadsheetByName_CHC(folder, name) {
+function getSpreadsheetByName(folder, name) {
   const files = folder.getFilesByName(name);
   if (files.hasNext()) {
     const file = files.next();
