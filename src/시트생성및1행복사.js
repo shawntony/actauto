@@ -21,31 +21,18 @@ const UNIFIED_SHEETS_PER_BATCH = BATCH_CONFIG.SHEETS_PER_BATCH;
  * 통합 프로세스 시작 - 시트 생성 + 1행 복사
  */
 function startCreateAndCopyRow1() {
-  const scriptProperties = PropertiesService.getScriptProperties();
-
   // 기존 진행 상황 초기화
-  scriptProperties.deleteProperty('UNIFIED_PROGRESS');
+  BatchProgress.delete('UNIFIED_PROGRESS');
 
   // 기존 트리거 정리
-  cleanupUnifiedTriggers();
+  TriggerManager.cleanup('processUnifiedBatch');
 
   // 소스 스프레드시트 열기
   const sourceSpreadsheet = SpreadsheetApp.openById(UNIFIED_SOURCE_SPREADSHEET_ID);
   const sourceSheets = sourceSpreadsheet.getSheets();
 
   // 초기 진행 상황 저장
-  const progress = {
-    sheetIndex: 0,
-    totalSheets: sourceSheets.length,
-    startTime: new Date().toISOString(),
-    results: {
-      success: 0,
-      failed: 0,
-      skipped: 0
-    }
-  };
-
-  scriptProperties.setProperty('UNIFIED_PROGRESS', JSON.stringify(progress));
+  BatchProgress.init('UNIFIED_PROGRESS', sourceSheets.length);
 
   Logger.log(`=== 통합 프로세스 시작 ===`);
   Logger.log(`작업: 시트 생성 + 1행 복사`);
@@ -61,19 +48,16 @@ function startCreateAndCopyRow1() {
  * 배치 처리 - 시트 생성 + 1행 복사
  */
 function processUnifiedBatch() {
-  const startTime = new Date().getTime();
-  const scriptProperties = PropertiesService.getScriptProperties();
+  const timer = createExecutionTimer(UNIFIED_MAX_EXECUTION_TIME);
 
   // 진행 상황 로드
-  const progressJson = scriptProperties.getProperty('UNIFIED_PROGRESS');
-  if (!progressJson) {
+  const progress = BatchProgress.get('UNIFIED_PROGRESS');
+  if (!progress) {
     Logger.log('진행 상황을 찾을 수 없습니다. startCreateAndCopyRow1()을 먼저 실행하세요.');
     return;
   }
 
-  const progress = JSON.parse(progressJson);
-
-  Logger.log(`배치 시작 - 시트: ${progress.sheetIndex}/${progress.totalSheets}`);
+  Logger.log(`배치 시작 - 시트: ${progress.currentIndex}/${progress.totalItems}`);
 
   try {
     // 스프레드시트 열기
@@ -90,18 +74,17 @@ function processUnifiedBatch() {
     let sheetsProcessedInBatch = 0;
 
     // 시트 처리 루프
-    while (progress.sheetIndex < progress.totalSheets && sheetsProcessedInBatch < UNIFIED_SHEETS_PER_BATCH) {
+    while (progress.currentIndex < progress.totalItems && sheetsProcessedInBatch < UNIFIED_SHEETS_PER_BATCH) {
       // 시간 체크
-      const elapsedTime = new Date().getTime() - startTime;
-      if (elapsedTime > UNIFIED_MAX_EXECUTION_TIME) {
-        Logger.log(`실행 시간 초과 (${Math.round(elapsedTime / 1000)}초). 다음 배치로 연기합니다.`);
+      if (timer.isTimeExceeded()) {
+        Logger.log(`실행 시간 초과 (${timer.getElapsedSeconds()}초). 다음 배치로 연기합니다.`);
         break;
       }
 
-      const sourceSheet = sourceSheets[progress.sheetIndex];
+      const sourceSheet = sourceSheets[progress.currentIndex];
       const sheetName = sourceSheet.getName();
 
-      Logger.log(`\n처리 중: ${sheetName} (${progress.sheetIndex + 1}/${progress.totalSheets})`);
+      Logger.log(`\n처리 중: ${sheetName} (${progress.currentIndex + 1}/${progress.totalItems})`);
 
       try {
         // 소스 시트의 1행 데이터 가져오기
@@ -110,8 +93,7 @@ function processUnifiedBatch() {
 
         if (lastColumn === 0 || lastRow === 0) {
           Logger.log(`  ⊘ ${sheetName}: 빈 시트, 건너뜀`);
-          progress.results.skipped++;
-          progress.sheetIndex++;
+          BatchProgress.increment('UNIFIED_PROGRESS', 'skipped');
           sheetsProcessedInBatch++;
           continue;
         }
@@ -137,7 +119,7 @@ function processUnifiedBatch() {
             if (!targetSheet) {
               Logger.log(`    📝 ${target.name}: 시트 생성 중...`);
               targetSheet = target.spreadsheet.insertSheet(sheetName);
-              Utilities.sleep(500); // 생성 대기
+              DelayUtils.afterSheetCreation(); // 생성 대기
             }
 
             // 1행에 데이터 복사
@@ -158,125 +140,80 @@ function processUnifiedBatch() {
         });
 
         if (successCount === UNIFIED_TARGET_SPREADSHEETS.length) {
-          progress.results.success++;
+          BatchProgress.increment('UNIFIED_PROGRESS', 'success');
         } else if (successCount > 0) {
-          progress.results.success++;
+          BatchProgress.increment('UNIFIED_PROGRESS', 'success');
           Logger.log(`  ⚠️  일부만 성공 (${successCount}/${UNIFIED_TARGET_SPREADSHEETS.length})`);
         } else {
-          progress.results.failed++;
+          BatchProgress.increment('UNIFIED_PROGRESS', 'failed');
         }
 
-        Utilities.sleep(500); // 대기
+        DelayUtils.standard(); // 대기
 
       } catch (error) {
         Logger.log(`  ❌ ${sheetName} 처리 실패: ${error.message}`);
-        progress.results.failed++;
+        BatchProgress.increment('UNIFIED_PROGRESS', 'failed');
       }
 
-      progress.sheetIndex++;
       sheetsProcessedInBatch++;
-
-      // 진행 상황 저장
-      scriptProperties.setProperty('UNIFIED_PROGRESS', JSON.stringify(progress));
     }
 
     Logger.log(`\n이번 배치 완료: ${sheetsProcessedInBatch}개 시트 처리됨`);
 
     // 모든 시트 처리 완료 확인
-    if (progress.sheetIndex >= progress.totalSheets) {
+    const updatedProgress = BatchProgress.get('UNIFIED_PROGRESS');
+    if (BatchProgress.isComplete('UNIFIED_PROGRESS')) {
       Logger.log('\n=== 🎉 모든 작업 완료! ===');
-      Logger.log(`✅ 성공: ${progress.results.success}개`);
-      Logger.log(`❌ 실패: ${progress.results.failed}개`);
-      Logger.log(`⊘ 건너뜀: ${progress.results.skipped}개`);
+      Logger.log(`✅ 성공: ${updatedProgress.results.success}개`);
+      Logger.log(`❌ 실패: ${updatedProgress.results.failed}개`);
+      Logger.log(`⊘ 건너뜀: ${updatedProgress.results.skipped}개`);
 
-      scriptProperties.deleteProperty('UNIFIED_PROGRESS');
-      cleanupUnifiedTriggers();
+      BatchProgress.delete('UNIFIED_PROGRESS');
+      TriggerManager.cleanup('processUnifiedBatch');
 
       // 완료 이메일 발송
-      const email = Session.getActiveUser().getEmail();
-      if (email) {
-        MailApp.sendEmail({
-          to: email,
-          subject: '📋 시트 생성 및 1행 복사 완료',
-          body: `모든 작업이 완료되었습니다!\n\n` +
-                `📌 작업 내용:\n` +
-                `- 시트 생성 (없는 경우)\n` +
-                `- 1행 데이터 및 서식 복사\n\n` +
-                `📊 소스: 법인재무관리_유니스\n` +
-                `🎯 대상: ${UNIFIED_TARGET_SPREADSHEETS.map(t => t.name).join(', ')}\n\n` +
-                `📈 결과:\n` +
-                `총 시트: ${progress.totalSheets}개\n` +
-                `✅ 성공: ${progress.results.success}개\n` +
-                `❌ 실패: ${progress.results.failed}개\n` +
-                `⊘ 건너뜀: ${progress.results.skipped}개\n\n` +
-                `⏰ 완료 시간: ${new Date().toLocaleString('ko-KR')}`
-        });
-      }
+      NotificationUtils.batchComplete(
+        '시트 생성 및 1행 복사',
+        updatedProgress,
+        UNIFIED_TARGET_SPREADSHEETS.map(t => t.name)
+      );
 
       return;
     }
 
     // 다음 배치를 위한 트리거 생성
     Logger.log('다음 배치를 1분 후에 실행합니다...');
-    ScriptApp.newTrigger('processUnifiedBatch')
-      .timeBased()
-      .after(1 * 60 * 1000) // 1분 후
-      .create();
+    TriggerManager.scheduleNextBatch('processUnifiedBatch', 1);
 
   } catch (error) {
     Logger.log(`\n❌ 배치 처리 중 오류 발생: ${error.message}`);
 
     // 오류 발생 시에도 다음 배치 시도
-    ScriptApp.newTrigger('processUnifiedBatch')
-      .timeBased()
-      .after(2 * 60 * 1000) // 2분 후 재시도
-      .create();
+    TriggerManager.scheduleRetry('processUnifiedBatch', 2);
   }
-}
-
-/**
- * 기존 트리거 정리
- */
-function cleanupUnifiedTriggers() {
-  const triggers = ScriptApp.getProjectTriggers();
-  triggers.forEach(trigger => {
-    if (trigger.getHandlerFunction() === 'processUnifiedBatch') {
-      ScriptApp.deleteTrigger(trigger);
-    }
-  });
-  Logger.log('기존 트리거 정리 완료');
 }
 
 /**
  * 진행 상황 확인
  */
 function checkUnifiedProgress() {
-  const scriptProperties = PropertiesService.getScriptProperties();
-  const progressJson = scriptProperties.getProperty('UNIFIED_PROGRESS');
+  const progressTracker = createBatchProgress('UNIFIED_PROGRESS', 0);
+  const progress = progressTracker.load();
 
-  if (!progressJson) {
+  if (!progress) {
     Logger.log('진행 중인 작업이 없습니다.');
     return;
   }
 
-  const progress = JSON.parse(progressJson);
-
-  Logger.log('=== 📊 현재 진행 상황 ===');
-  Logger.log(`시트: ${progress.sheetIndex}/${progress.totalSheets}`);
-  Logger.log(`진행률: ${Math.round(progress.sheetIndex / progress.totalSheets * 100)}%`);
-  Logger.log(`✅ 성공: ${progress.results.success}개`);
-  Logger.log(`❌ 실패: ${progress.results.failed}개`);
-  Logger.log(`⊘ 건너뜀: ${progress.results.skipped}개`);
-  Logger.log(`⏰ 시작 시간: ${progress.startTime}`);
+  progressTracker.logStatus();
 }
 
 /**
  * 프로세스 중지
  */
 function stopUnifiedProcess() {
-  const scriptProperties = PropertiesService.getScriptProperties();
-  scriptProperties.deleteProperty('UNIFIED_PROGRESS');
-  cleanupUnifiedTriggers();
+  BatchProgress.delete('UNIFIED_PROGRESS');
+  TriggerManager.cleanup('processUnifiedBatch');
   Logger.log('작업이 중지되었습니다.');
 }
 
@@ -321,6 +258,7 @@ function testUnifiedCopy(sheetName) {
       if (!targetSheet) {
         Logger.log(`📝 ${target.name}: 시트 생성 중...`);
         targetSheet = targetSpreadsheet.insertSheet(sheetName);
+        DelayUtils.afterSheetCreation();
       }
 
       // 1행 복사
