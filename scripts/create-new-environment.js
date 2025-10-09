@@ -19,20 +19,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-
-// 색상 코드
-const colors = {
-  reset: '\x1b[0m',
-  bright: '\x1b[1m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[36m',
-  red: '\x1b[31m'
-};
-
-function log(message, color = 'reset') {
-  console.log(colors[color] + message + colors.reset);
-}
+const { log, header, success, error, warning, info } = require('./utils/colorLogger');
 
 /**
  * 환경 생성 함수 템플릿 생성

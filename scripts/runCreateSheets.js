@@ -3,29 +3,19 @@
  *
  * 사용법:
  * node scripts/runCreateSheets.js
+ *
+ * 참고: 환경 설정은 src/shared/config.js에서 관리됩니다
  */
 
 const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-// 환경 설정
-const SOURCE_SPREADSHEET_ID = '1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8'; // 유니스
+// 환경 설정 (src/shared/config.js에서 가져옴)
+const { getSourceSpreadsheet, getTargetSpreadsheets, BATCH_CONFIG } = require('../src/shared/config');
 
-const TARGET_SPREADSHEETS = [
-  {
-    id: '1QNQwhOCU0fJpn19BkxpyNUi6bvdAYcgOIPTAM6rdwZ0',
-    name: '스마트비즈센터'
-  },
-  {
-    id: '1xmrR4KLWf2S7J4IQgHrJiIUEb4PCC9aUI7Mwbq29PcU',
-    name: '스마트비즈센터1'
-  },
-  {
-    id: '1GjeKgw6c7h5WW1Y8u-v3ixPG6LNX9owf5rZrho9zdkU',
-    name: '스마트비즈센터2'
-  }
-];
+const SOURCE_SPREADSHEET_ID = getSourceSpreadsheet().id;
+const TARGET_SPREADSHEETS = getTargetSpreadsheets();
 
 // 임시 스크립트 파일 생성
 function createTempScript() {
@@ -35,8 +25,8 @@ const UNIFIED_SOURCE_SPREADSHEET_ID = '${SOURCE_SPREADSHEET_ID}';
 
 const UNIFIED_TARGET_SPREADSHEETS = ${JSON.stringify(TARGET_SPREADSHEETS, null, 2)};
 
-const UNIFIED_MAX_EXECUTION_TIME = 3 * 60 * 1000;
-const UNIFIED_SHEETS_PER_BATCH = 3;
+const UNIFIED_MAX_EXECUTION_TIME = ${BATCH_CONFIG.MAX_EXECUTION_TIME};
+const UNIFIED_SHEETS_PER_BATCH = ${BATCH_CONFIG.SHEETS_PER_BATCH};
 
 ${fs.readFileSync(path.join(__dirname, 'createSheetsAndCopyRow1.js'), 'utf8').split('\n').slice(21).join('\n')}
 

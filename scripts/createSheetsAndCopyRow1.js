@@ -3,29 +3,19 @@
  *
  * 사용법:
  * 1. Apps Script 편집기에서 이 코드를 복사
- * 2. startCreateAndCopyRow1() 함수를 실행
+ * 2. src/shared/config.js 파일도 함께 Apps Script 프로젝트에 포함
+ * 3. startCreateAndCopyRow1() 함수를 실행
+ *
+ * 참고: 환경 설정은 src/shared/config.js에서 관리됩니다
  */
 
-// 환경 설정
-const UNIFIED_SOURCE_SPREADSHEET_ID = '1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8'; // 유니스
+// 환경 설정 (src/shared/config.js에서 가져옴)
+const UNIFIED_SOURCE_SPREADSHEET_ID = getSourceSpreadsheet().id;
+const UNIFIED_TARGET_SPREADSHEETS = getTargetSpreadsheets();
 
-const UNIFIED_TARGET_SPREADSHEETS = [
-  {
-    id: '1QNQwhOCU0fJpn19BkxpyNUi6bvdAYcgOIPTAM6rdwZ0',
-    name: '스마트비즈센터'
-  },
-  {
-    id: '1xmrR4KLWf2S7J4IQgHrJiIUEb4PCC9aUI7Mwbq29PcU',
-    name: '스마트비즈센터1'
-  },
-  {
-    id: '1GjeKgw6c7h5WW1Y8u-v3ixPG6LNX9owf5rZrho9zdkU',
-    name: '스마트비즈센터2'
-  }
-];
-
-const UNIFIED_MAX_EXECUTION_TIME = 3 * 60 * 1000; // 3분
-const UNIFIED_SHEETS_PER_BATCH = 3; // 배치당 3개 시트 처리
+// 배치 처리 설정 (src/shared/config.js에서 가져옴)
+const UNIFIED_MAX_EXECUTION_TIME = BATCH_CONFIG.MAX_EXECUTION_TIME;
+const UNIFIED_SHEETS_PER_BATCH = BATCH_CONFIG.SHEETS_PER_BATCH;
 
 /**
  * 통합 프로세스 시작 - 시트 생성 + 1행 복사
