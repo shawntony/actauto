@@ -14,7 +14,7 @@ function updateSearchCriteria() {
   const configSheet = ss.getSheetByName('설정');
 
   if (!ledgerSheet || !configSheet) {
-    SpreadsheetApp.getUi().alert('은행원장 또는 설정 시트를 찾을 수 없습니다.');
+    UIUtils.alertError(new Error('은행원장 또는 설정 시트를 찾을 수 없습니다.'), '거래내용 전처리');
     return;
   }
 
@@ -123,7 +123,7 @@ function updateSearchCriteria() {
 
   // 💡 수정된 newData를 T열까지 포함하여 다시 시트에 기록합니다.
   ledgerSheet.getRange('A2:T' + lastRow).setValues(newData);
-  SpreadsheetApp.getUi().alert('거래 내용 전처리가 완료되었습니다.');
+  UIUtils.toastSuccess('거래 내용 전처리가 완료되었습니다.');
 }
 
 // --------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ function processLoanTransactions() {
   const ledgerSheet = ss.getSheetByName('은행원장');
 
   if (!ledgerSheet) {
-    SpreadsheetApp.getUi().alert('은행원장 시트를 찾을 수 없습니다.');
+    UIUtils.alertError(new Error('은행원장 시트를 찾을 수 없습니다.'), '대부 및 가수금 거래 전처리');
     return;
   }
 
@@ -203,5 +203,5 @@ function processLoanTransactions() {
 
   // 💡 수정된 데이터로 시트 업데이트
   dataRange.setValues(updatedData);
-  SpreadsheetApp.getUi().alert('대부 및 가수금 거래 전처리가 완료되었습니다.');
+  UIUtils.toastSuccess('대부 및 가수금 거래 전처리가 완료되었습니다.');
 }

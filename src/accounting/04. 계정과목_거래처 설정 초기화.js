@@ -3,7 +3,7 @@ function clearF2toHColumnInConfig() {
   const configSheet = ss.getSheetByName('설정');
   
   if (!configSheet) {
-    SpreadsheetApp.getUi().alert('오류: "설정" 시트를 찾을 수 없습니다.');
+    UIUtils.alertError(new Error('"설정" 시트를 찾을 수 없습니다.'), '설정 초기화');
     return;
   }
   
@@ -18,6 +18,6 @@ function clearF2toHColumnInConfig() {
   
   // 범위의 내용(값)만 삭제합니다.
   rangeToClear.clearContent();
-  
-  SpreadsheetApp.getUi().alert('설정 시트의 F2셀부터 H열 데이터가 성공적으로 삭제되었습니다.');
+
+  UIUtils.toastSuccess('설정 시트의 F2셀부터 H열 데이터가 성공적으로 삭제되었습니다.');
 }
