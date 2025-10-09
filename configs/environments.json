@@ -62,6 +62,69 @@
       "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1-gOcefZlaoDuLpIvt2LGednjbdYKmOSou25-j3_hrAI/edit",
       "description": "케이제이와이 회계 관리 시스템",
       "debugMode": false
+    },
+    "jsp": {
+      "name": "제이에스파트너스",
+      "scriptId": "1e4cNUzzSyn5WLcBl_HL87JSBgxVfgsIAYXZpPRJKe3HKRRfQMTdTSoqR",
+      "spreadsheetId": "1hSILzBCZW_f5_N_nf8qWNSC610hbWdJKppSO7m_PIn4",
+      "folderId": "1f4I_KGIULZCQw9TEbp-LI2nLV-dSMjD2",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1hSILzBCZW_f5_N_nf8qWNSC610hbWdJKppSO7m_PIn4/edit",
+      "description": "제이에스파트너스 회계 관리 시스템",
+      "debugMode": false
+    },
+    "jjqube": {
+      "name": "제이제이큐브",
+      "scriptId": "1ubo9LjotcMCQoDoyN4qiz3I9ApvDdLMOs_i29ApebJeJdtMciyGtJ1jz",
+      "spreadsheetId": "1ul4Pzf-LiCQ3HSDt4PBt8AkoySmTuSutHO07U9dfSto",
+      "folderId": "1zFZMGdiIiQIGDh6tQWFvqc_B4zcOvCKF",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1ul4Pzf-LiCQ3HSDTuSutHO07U9dfSto/edit",
+      "description": "제이제이큐브 회계 관리 시스템",
+      "debugMode": false
+    },
+    "khfamilyoffice": {
+      "name": "KH패밀리오피스",
+      "scriptId": "1mkoJGbDnRePyy1JM8Gg2V9-lRziOFsP2GA3Ilrj3yf4AtkEK6x65Vy0x",
+      "spreadsheetId": "13P_APJdRb-iSTKJbDYe45PHLenjcMQMp2aycl3cf9A8",
+      "folderId": "1t78PYrqOZd61eDVkf5zOLrVoNReS_YuC",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/13P_APJdRb-iSTKJbDYe45PHLenjcMQMp2aycl3cf9A8/edit",
+      "description": "KH패밀리오피스 회계시스템",
+      "debugMode": false
+    },
+    "hskdevelop": {
+      "name": "HSK개발",
+      "scriptId": "18-_OHFc0suwxJhRGyT6_Eeg01RIfWRLZ9diGm6nCpuLGevDCOpvHOuWm",
+      "spreadsheetId": "1lLsybTNqGPJczAZxluqXU_PbkUKfyzzqPtLG4Au3L0s",
+      "folderId": "1uf2FvLWBwT4iFCgLF-aO0uSY8EtSxrCG",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1lLsybTNqGPJczAZxluqXU_PbkUKfyzzqPtLG4Au3L0s/edit",
+      "description": "HSK개발 회계시스템",
+      "debugMode": false
+    },
+    "cycompany": {
+      "name": "씨와이컴퍼니",
+      "scriptId": "1olRM4Bp-77jDuocLxr86w3qanfznk-x_8VF-DSN1S_mT6ToLLUdF2nQN",
+      "spreadsheetId": "1viiIOytu8TJ6pQyRkHDFFHhOFB_nSLUBSeHxwKn6djM",
+      "folderId": "1o-70dNqJdBK_oGAn6bVDrkHZkKbbAfHt",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1viiIOytu8TJ6pQyRkHDFFHhOFB_nSLUBSeHxwKn6djM/edit",
+      "description": "씨와이컴퍼니 회계시스템",
+      "debugMode": false
+    },
+    "chc": {
+      "name": "씨에이치씨",
+      "scriptId": "1XCZkSPzQNa00o8YYP88l6s2EpFx0ytcfE0cctfqCq60Lk3tDLk0PVBqk",
+      "spreadsheetId": "1cXF8xyrtcWp-TN4VeGNk1ZlWk3PWd7vzoPqBGw7DJlc",
+      "folderId": "1Pd7RhoRFCcPrJMCObLYlyQjIlwqWIveG",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1cXF8xyrtcWp-TN4VeGNk1ZlWk3PWd7vzoPqBGw7DJlc/edit",
+      "description": "씨에이치씨 회계시스템",
+      "debugMode": false
+    },
+    "jckim": {
+      "name": "제이씨킴",
+      "scriptId": "19FsjVF4Y3sqMKwPJzWPaq2cQ8bdpOmB6Pyohs8Lpgt5ttEMDPhzJ3i13",
+      "spreadsheetId": "1iC27667Ggnu8_3OzdVTuxqnyEfLlp1Fm6oUZQ5GanTY",
+      "folderId": "1mRPycjNfxLZTBdu3yX8VoHdXX6xC_GQI",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1iC27667Ggnu8_3OzdVTuxqnyEfLlp1Fm6oUZQ5GanTY/edit",
+      "description": "제이씨킴 회계시스템",
+      "debugMode": false
     }
   },
   "default": "development"
