@@ -71,6 +71,42 @@ npx clasp login
 - **development**: 개발 환경 (개발 및 테스트)
 - **testing**: 테스트 환경 (QA)
 
+### 현재 운영 중인 환경 (24개)
+
+**기본 환경** (3개):
+- production (유니스)
+- development (개발 환경)
+- testing (테스트 환경)
+
+**스마트비즈센터** (3개):
+- smartbiz1 (스마트비즈센터1)
+- smartbiz2 (스마트비즈센터2)
+- smartbiz (스마트비즈센터)
+
+**주요 클라이언트** (7개):
+- kjy (케이제이와이)
+- jsp (제이에스파트너스)
+- jjqube (제이제이큐브)
+- khfamilyoffice (KH패밀리오피스)
+- hskdevelop (HSK개발)
+- cycompany (씨와이컴퍼니)
+- chc (씨에이치씨)
+
+**2024년 신규 클라이언트** (10개):
+- thesmartn (더스마트앤)
+- thesmartnmutual (더스마트앤협동조합)
+- raudem (라우뎀)
+- redfolio (레드폴리오)
+- ahn (안앤드안어드바이저)
+- admonz (애드몬즈)
+- lnlhorizon (엘앤엘호라이즌)
+- tnd (티앤디)
+- hanurumc (하누리MC)
+- haerimcnp (해림씨앤피)
+
+**개발 테스트** (1개):
+- jckim (제이씨킴)
+
 ### 환경 목록 확인
 ```bash
 npm run env:list
@@ -847,6 +883,37 @@ git merge before-deploy
 git push origin main
 ```
 
+## 🛠️ 유틸리티 스크립트
+
+프로젝트 관리 및 환경 정리를 위한 유틸리티 스크립트:
+
+### 환경 관리 스크립트
+- **`scripts/check-and-clean.js`**: 환경 설정 검증 및 정리
+  - environments.json의 모든 환경 검증
+  - 누락된 clasp 설정 파일 탐지
+  - 불필요한 파일 정리 제안
+
+- **`scripts/cleanup-environments.js`**: 환경 정리 자동화
+  - 사용하지 않는 환경 설정 제거
+  - 중복 설정 파일 정리
+  - 백업 생성 후 안전 삭제
+
+- **`scripts/delete-extra-files.js`**: 추가 파일 정리
+  - 임시 파일 및 백업 파일 제거
+  - 배포 과정에서 생성된 불필요한 파일 정리
+
+### 사용 예시
+```bash
+# 환경 검증 및 문제 확인
+node scripts/check-and-clean.js
+
+# 환경 정리 (백업 포함)
+node scripts/cleanup-environments.js
+
+# 불필요한 파일 제거
+node scripts/delete-extra-files.js
+```
+
 ## 🛠️ NPM 스크립트
 
 | 명령어 | 설명 |
@@ -894,6 +961,12 @@ ISC
   - Apps Script용 테스트 프레임워크 사용법
   - 18개 assertion 함수 설명
   - 실제 테스트 예시 및 모범 사례
+
+### 통합 및 연동
+- 📘 **[Corp-Kanban NAS 동기화 가이드](corp-kanban/NAS_SETUP_GUIDE.md)**
+  - NAS 환경 설정 및 연동 방법
+  - 환경 변수 자동 동기화
+  - Supabase 프로젝트 연결
 
 ## 👤 작성자
 
