@@ -16,6 +16,7 @@ const environments = JSON.parse(fs.readFileSync(environmentsPath, 'utf8'));
 // 명령줄 인수 파싱
 const args = process.argv.slice(2);
 const targetEnv = args[0] || environments.default;
+const forceFlag = args.includes('--force') ? '--force' : '';
 
 // 사용법 출력
 if (args.includes('--help') || args.includes('-h')) {
@@ -132,7 +133,7 @@ function deployToEnvironment(envName) {
 
     // 3. clasp push 실행
     console.log('   코드 푸시 중...');
-    const result = execSync('npx clasp push', {
+    const result = execSync(`npx clasp push ${forceFlag}`, {
       cwd: path.join(__dirname, '..'),
       encoding: 'utf8'
     });

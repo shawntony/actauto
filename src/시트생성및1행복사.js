@@ -9,18 +9,23 @@
  * 참고: 환경 설정은 shared/config.js에서 관리됩니다
  */
 
-// 환경 설정 (shared/config.js에서 가져옴)
-const UNIFIED_SOURCE_SPREADSHEET_ID = getSourceSpreadsheet().id;
-const UNIFIED_TARGET_SPREADSHEETS = getTargetSpreadsheets();
-
-// 배치 처리 설정 (shared/config.js에서 가져옴)
-const UNIFIED_MAX_EXECUTION_TIME = BATCH_CONFIG.MAX_EXECUTION_TIME;
-const UNIFIED_SHEETS_PER_BATCH = BATCH_CONFIG.SHEETS_PER_BATCH;
+// 환경 설정을 함수 내에서 가져오도록 변경 (초기화 순서 문제 해결)
+function getUnifiedConfig() {
+  return {
+    sourceSpreadsheetId: getSourceSpreadsheet().id,
+    targetSpreadsheets: getTargetSpreadsheets(),
+    maxExecutionTime: BATCH_CONFIG.MAX_EXECUTION_TIME,
+    sheetsPerBatch: BATCH_CONFIG.SHEETS_PER_BATCH
+  };
+}
 
 /**
  * 통합 프로세스 시작 - 시트 생성 + 1행 복사
  */
 function startCreateAndCopyRow1() {
+  // 환경 설정 가져오기
+  const config = getUnifiedConfig();
+
   // 기존 진행 상황 초기화
   BatchProgress.delete('UNIFIED_PROGRESS');
 
@@ -28,7 +33,7 @@ function startCreateAndCopyRow1() {
   TriggerManager.cleanup('processUnifiedBatch');
 
   // 소스 스프레드시트 열기
-  const sourceSpreadsheet = SpreadsheetApp.openById(UNIFIED_SOURCE_SPREADSHEET_ID);
+  const sourceSpreadsheet = SpreadsheetApp.openById(config.sourceSpreadsheetId);
   const sourceSheets = sourceSpreadsheet.getSheets();
 
   // 초기 진행 상황 저장
@@ -37,7 +42,7 @@ function startCreateAndCopyRow1() {
   Logger.log(`=== 통합 프로세스 시작 ===`);
   Logger.log(`작업: 시트 생성 + 1행 복사`);
   Logger.log(`소스: 법인재무관리_유니스`);
-  Logger.log(`대상: ${UNIFIED_TARGET_SPREADSHEETS.length}개 스프레드시트`);
+  Logger.log(`대상: ${config.targetSpreadsheets.length}개 스프레드시트`);
   Logger.log(`시트: ${sourceSheets.length}개`);
 
   // 첫 번째 배치 실행
@@ -48,10 +53,11 @@ function startCreateAndCopyRow1() {
  * 배치 처리 - 시트 생성 + 1행 복사
  */
 function processUnifiedBatch() {
-  const timer = createExecutionTimer(UNIFIED_MAX_EXECUTION_TIME);
+  const config = getUnifiedConfig();
+  const timer = createExecutionTimer(config.maxExecutionTime);
 
   // 진행 상황 로드
-  const progress = BatchProgress.get('UNIFIED_PROGRESS');
+  let progress = BatchProgress.get('UNIFIED_PROGRESS');
   if (!progress) {
     Logger.log('진행 상황을 찾을 수 없습니다. startCreateAndCopyRow1()을 먼저 실행하세요.');
     return;
@@ -61,11 +67,11 @@ function processUnifiedBatch() {
 
   try {
     // 스프레드시트 열기
-    const sourceSpreadsheet = SpreadsheetApp.openById(UNIFIED_SOURCE_SPREADSHEET_ID);
+    const sourceSpreadsheet = SpreadsheetApp.openById(config.sourceSpreadsheetId);
     const sourceSheets = sourceSpreadsheet.getSheets();
 
     // 대상 스프레드시트들 열기
-    const targetSpreadsheets = UNIFIED_TARGET_SPREADSHEETS.map(target => ({
+    const targetSpreadsheets = config.targetSpreadsheets.map(target => ({
       name: target.name,
       spreadsheet: SpreadsheetApp.openById(target.id)
     }));
@@ -74,7 +80,7 @@ function processUnifiedBatch() {
     let sheetsProcessedInBatch = 0;
 
     // 시트 처리 루프
-    while (progress.currentIndex < progress.totalItems && sheetsProcessedInBatch < UNIFIED_SHEETS_PER_BATCH) {
+    while (progress.currentIndex < progress.totalItems && sheetsProcessedInBatch < config.sheetsPerBatch) {
       // 시간 체크
       if (timer.isTimeExceeded()) {
         Logger.log(`실행 시간 초과 (${timer.getElapsedSeconds()}초). 다음 배치로 연기합니다.`);
@@ -139,11 +145,11 @@ function processUnifiedBatch() {
           }
         });
 
-        if (successCount === UNIFIED_TARGET_SPREADSHEETS.length) {
+        if (successCount === config.targetSpreadsheets.length) {
           BatchProgress.increment('UNIFIED_PROGRESS', 'success');
         } else if (successCount > 0) {
           BatchProgress.increment('UNIFIED_PROGRESS', 'success');
-          Logger.log(`  ⚠️  일부만 성공 (${successCount}/${UNIFIED_TARGET_SPREADSHEETS.length})`);
+          Logger.log(`  ⚠️  일부만 성공 (${successCount}/${config.targetSpreadsheets.length})`);
         } else {
           BatchProgress.increment('UNIFIED_PROGRESS', 'failed');
         }
@@ -156,6 +162,9 @@ function processUnifiedBatch() {
       }
 
       sheetsProcessedInBatch++;
+
+      // 로컬 progress 변수 업데이트 (중요!)
+      progress = BatchProgress.get('UNIFIED_PROGRESS');
     }
 
     Logger.log(`\n이번 배치 완료: ${sheetsProcessedInBatch}개 시트 처리됨`);
@@ -172,10 +181,11 @@ function processUnifiedBatch() {
       TriggerManager.cleanup('processUnifiedBatch');
 
       // 완료 이메일 발송
+      const finalConfig = getUnifiedConfig();
       NotificationUtils.batchComplete(
         '시트 생성 및 1행 복사',
         updatedProgress,
-        UNIFIED_TARGET_SPREADSHEETS.map(t => t.name)
+        finalConfig.targetSpreadsheets.map(t => t.name)
       );
 
       return;
@@ -221,7 +231,8 @@ function stopUnifiedProcess() {
  * 특정 시트만 테스트 (시트 생성 + 1행 복사)
  */
 function testUnifiedCopy(sheetName) {
-  const sourceSpreadsheet = SpreadsheetApp.openById(UNIFIED_SOURCE_SPREADSHEET_ID);
+  const config = getUnifiedConfig();
+  const sourceSpreadsheet = SpreadsheetApp.openById(config.sourceSpreadsheetId);
   const sourceSheet = sourceSpreadsheet.getSheetByName(sheetName);
 
   if (!sourceSheet) {
@@ -249,7 +260,7 @@ function testUnifiedCopy(sheetName) {
   Logger.log(`📊 1행 데이터: ${row1Values[0].join(', ')}`);
   Logger.log('');
 
-  UNIFIED_TARGET_SPREADSHEETS.forEach(target => {
+  config.targetSpreadsheets.forEach(target => {
     try {
       const targetSpreadsheet = SpreadsheetApp.openById(target.id);
       let targetSheet = targetSpreadsheet.getSheetByName(sheetName);
@@ -298,7 +309,8 @@ function test거래처통합() {
  * 소스 시트 목록 확인
  */
 function listUnifiedSourceSheets() {
-  const sourceSpreadsheet = SpreadsheetApp.openById(UNIFIED_SOURCE_SPREADSHEET_ID);
+  const config = getUnifiedConfig();
+  const sourceSpreadsheet = SpreadsheetApp.openById(config.sourceSpreadsheetId);
   const sheets = sourceSpreadsheet.getSheets();
 
   Logger.log('=== 📋 소스 스프레드시트 시트 목록 ===');

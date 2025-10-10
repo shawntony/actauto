@@ -8,20 +8,19 @@
  * 참고: 환경 설정은 shared/config.js에서 관리됩니다
  */
 
-// 환경 설정 (shared/config.js에서 가져옴)
-const SPREADSHEETS = getAllSpreadsheets();
-
 function checkAllSheets() {
+  // 환경 설정을 함수 내에서 가져오기 (전역 변수 충돌 방지)
+  const spreadsheets = getAllSpreadsheets();
   Logger.log('='.repeat(70));
   Logger.log('📊 모든 환경의 시트 목록 확인');
   Logger.log('='.repeat(70));
   Logger.log('');
 
-  const sourceSpreadsheet = SpreadsheetApp.openById(SPREADSHEETS[0].id);
+  const sourceSpreadsheet = SpreadsheetApp.openById(spreadsheets[0].id);
   const sourceSheets = sourceSpreadsheet.getSheets();
   const sourceSheetNames = sourceSheets.map(s => s.getName());
 
-  Logger.log(`📌 소스 (${SPREADSHEETS[0].name}): ${sourceSheetNames.length}개 시트`);
+  Logger.log(`📌 소스 (${spreadsheets[0].name}): ${sourceSheetNames.length}개 시트`);
   sourceSheetNames.forEach((name, index) => {
     Logger.log(`   ${index + 1}. ${name}`);
   });
@@ -34,8 +33,8 @@ function checkAllSheets() {
     summary: []
   };
 
-  for (let i = 1; i < SPREADSHEETS.length; i++) {
-    const target = SPREADSHEETS[i];
+  for (let i = 1; i < spreadsheets.length; i++) {
+    const target = spreadsheets[i];
 
     try {
       const targetSpreadsheet = SpreadsheetApp.openById(target.id);
@@ -121,7 +120,8 @@ function checkAllSheets() {
 function checkSpecificSheet(sheetName) {
   Logger.log(`🔍 "${sheetName}" 시트 확인\n`);
 
-  SPREADSHEETS.forEach(env => {
+  const spreadsheets = getAllSpreadsheets();
+  spreadsheets.forEach(env => {
     try {
       const ss = SpreadsheetApp.openById(env.id);
       const sheet = ss.getSheetByName(sheetName);

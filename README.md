@@ -94,31 +94,38 @@ npm run deploy:all
 
 ### 새 환경 추가
 
-#### 방법 1: 대화형 설정 (권장)
+**빠른 시작 (완전 자동화)**:
+
+```bash
+# 1. 자동화 스크립트 실행
+node scripts/create-new-environment.js
+
+# 2. 프롬프트에 따라 정보 입력
+# 3. Apps Script에서 환경 생성 함수 실행
+# 4. 생성된 정보 입력 및 자동 배포
+```
+
+**총 소요 시간**: 5-10분 (대부분 자동)
+
+#### 상세 가이드
+
+새로운 법인 환경 생성 과정에 대한 자세한 내용은 다음 문서를 참조하세요:
+- 📘 **[새로운 환경 생성 가이드](scripts/새로운환경생성가이드.md)** - 완전 자동화 프로세스
+- 📘 **[시트 복사 트러블슈팅](claudedocs/jjqube-시트복사-방법.md)** - 시트 복사 문제 해결
+
+#### 수동 설정 (고급)
+
+<details>
+<summary>대화형 설정 또는 수동 설정 보기</summary>
+
+##### 방법 1: 대화형 설정
 ```bash
 npm run env:setup
 ```
 
-프롬프트에 따라 다음 정보를 입력:
-1. 환경 키 (예: client1, project2)
-2. 환경 이름 (예: 고객사1, 프로젝트2)
-3. 스크립트 ID (Apps Script 프로젝트 설정에서 복사)
-4. 스프레드시트 ID (URL에서 추출: `/d/{SPREADSHEET_ID}/`)
-5. 폴더 ID (은행거래내역 업로드용 드라이브 폴더)
-6. 스프레드시트 URL (선택)
-7. 설명 (선택)
-8. 디버그 모드 활성화 여부 (y/n)
+##### 방법 2: 수동 설정
 
-#### 방법 2: 수동 설정
-
-1. **스크립트 ID 확인**
-   - 구글 스프레드시트 열기
-   - 확장 프로그램 → Apps Script
-   - 프로젝트 설정에서 스크립트 ID 복사
-
-2. **환경 설정 파일 수정**
-
-   `configs/environments.json`에 새 환경 추가:
+1. **`configs/environments.json`에 환경 추가**
    ```json
    {
      "environments": {
@@ -127,35 +134,26 @@ npm run env:setup
          "scriptId": "YOUR_SCRIPT_ID_HERE",
          "spreadsheetId": "YOUR_SPREADSHEET_ID_HERE",
          "folderId": "YOUR_FOLDER_ID_HERE",
-         "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID_HERE",
-         "description": "고객사1 회계 시스템",
-         "debugMode": true
+         "description": "고객사1 회계 시스템"
        }
      }
    }
    ```
 
-   ⚠️ **중요**: 각 환경마다 `spreadsheetId`와 `folderId`를 반드시 설정해야 합니다.
-
-3. **Clasp 설정 파일 생성**
-
-   `configs/clasp-client1.json` 파일 생성:
+2. **`configs/clasp-client1.json` 생성**
    ```json
    {
      "scriptId": "YOUR_SCRIPT_ID_HERE",
-     "rootDir": "",
-     "scriptExtensions": [".js", ".gs"],
-     "htmlExtensions": [".html"],
-     "jsonExtensions": [".json"],
-     "filePushOrder": [],
-     "skipSubdirectories": false
+     "rootDir": ""
    }
    ```
 
-4. **배포**
+3. **배포**
    ```bash
    npm run deploy client1
    ```
+
+</details>
 
 ## 🧰 공통 유틸리티 모듈 (Shared Utilities)
 
@@ -760,6 +758,8 @@ eaa189b - Refactor remaining 4 environment creation scripts
    - 전체 assertion 함수 문서화
    - 모범 사례 및 실행 방법
 
+📘 **[테스트 작성 가이드](src/shared/TESTING.md)** - 테스트 프레임워크 상세 사용법
+
 **Phase 3-4: 설정 중앙화**
 - `config.js` 확장 (89줄 → 130줄)
 - `SHEET_NAMES`: 공통 시트 이름 상수
@@ -872,6 +872,28 @@ git push origin main
 ## 📝 라이선스
 
 ISC
+
+## 📚 상세 가이드 문서
+
+프로젝트의 각 주제별 상세 가이드 문서:
+
+### 환경 관리
+- 📘 **[새로운 환경 생성 가이드](scripts/새로운환경생성가이드.md)**
+  - 완전 자동화된 법인 환경 생성 프로세스
+  - Apps Script 함수 실행부터 자동 배포까지
+  - 트러블슈팅 및 검증 방법
+
+### 트러블슈팅
+- 📘 **[시트 복사 트러블슈팅](claudedocs/jjqube-시트복사-방법.md)**
+  - 시트 복사 문제 해결 방법
+  - 권한 문제 및 실행 방법
+  - 복사 내용 검증
+
+### 테스트
+- 📘 **[테스트 작성 가이드](src/shared/TESTING.md)**
+  - Apps Script용 테스트 프레임워크 사용법
+  - 18개 assertion 함수 설명
+  - 실제 테스트 예시 및 모범 사례
 
 ## 👤 작성자
 

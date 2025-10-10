@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__serena__list_dir",
+      "mcp__serena__search_for_pattern",
+      "Bash(node:*)",
+      "Bash(npx clasp push:*)",
+      "Bash(cat:*)",
+      "Bash(dir:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsx:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

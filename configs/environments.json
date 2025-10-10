@@ -125,6 +125,96 @@
       "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1iC27667Ggnu8_3OzdVTuxqnyEfLlp1Fm6oUZQ5GanTY/edit",
       "description": "제이씨킴 회계시스템",
       "debugMode": false
+    },
+    "ahn": {
+      "name": "안앤드안어드바이저",
+      "scriptId": "1eFv2TSizHQSzPKOYztEVJu1bnZiaQJsjqfjMMjYEvglUxy1yWEO5afFn",
+      "spreadsheetId": "1IbuZ1rGMBtzdAYiCtekmHaTDmkN606knXmgTjGjiHYQ",
+      "folderId": "1pg9bw5R2HgLISdnoIsgZNqhmtF10bVYT",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1IbuZ1rGMBtzdAYiCtekmHaTDmkN606knXmgTjGjiHYQ/edit",
+      "description": "안앤드안 회계계시스템",
+      "debugMode": false
+    },
+    "lnlhorizon": {
+      "name": "엘앤엘호라이즌",
+      "scriptId": "18ehI9iT4B8xgVe6Jo7hySO-GGe8eph2kQMcrQwQd8C7wnjMiqjeBYV4t",
+      "spreadsheetId": "151gQ0GEpDvairtgMdqeYqjksQJxaNyfCJiz_-s8_sDA",
+      "folderId": "19TniaMucE6LqNm4QhNJaN56dwUi-8AVl",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/151gQ0GEpDvairtgMdqeYqjksQJxaNyfCJiz_-s8_sDA/edit",
+      "description": "엘앤엘호라이즌 회계계시스템",
+      "debugMode": false
+    },
+    "tnd": {
+      "name": "티앤디",
+      "scriptId": "1SR8mq7AHJj1zwShWmoPTUo5A8DZ0BXgfnI4jVNb3yUvrvX7w7DmDDTLh",
+      "spreadsheetId": "1DWekXZ1i5xLuXxe-c1PgClOU9dtYGiNYOHM7NpakjO0",
+      "folderId": "1tIfXJ1Ly_NrhX_5DaySHxDIbqOmDJMO9",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1DWekXZ1i5xLuXxe-c1PgClOU9dtYGiNYOHM7NpakjO0/edit",
+      "description": "티앤디 회계계시스템",
+      "debugMode": false
+    },
+    "hanurumc": {
+      "name": "하누리MC",
+      "scriptId": "1v2yXDFfk2LPeVKGK9rza0AIC8MGgqtuukrZwmr4IOVjxrQg_SznHjASB",
+      "spreadsheetId": "1-gqj3uFZXgP272O5e6ipcEpnF8rP_eAa_H4lppv0gJI",
+      "folderId": "1B5tEwWFEzlsoFTTpNzuVNnUS4yTztSZH",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1-gqj3uFZXgP272O5e6ipcEpnF8rP_eAa_H4lppv0gJI/edit",
+      "description": "하누리MC 회계계시스템",
+      "debugMode": false
+    },
+    "raudem": {
+      "name": "라우뎀",
+      "scriptId": "1ltP5qseSXyNzgkUHE0kI5gh2Mn2b87ncKveqyZmjWxt3G2r5RIlQkwiY",
+      "spreadsheetId": "1C79JTdkepkynRyBWiTo7ECtnt55nK46IDw8L6CH_k8I",
+      "folderId": "1Tijehkpa_fafheoliTx366g2vsLEZcS7",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1C79JTdkepkynRyBWiTo7ECtnt55nK46IDw8L6CH_k8I/edit",
+      "description": "라우뎀 회계계시스템",
+      "debugMode": false
+    },
+    "redfolio": {
+      "name": "레드폴리오",
+      "scriptId": "1IFo9VdGxOkzWKhIAEpO_S4rH6q8wgA4NcHEPzSZ7FoVJjdnO3PtS-lHN",
+      "spreadsheetId": "1Zpakn6GJilSmKWRqCtbnIkYRbRH50u5uiZs30Q4STz0",
+      "folderId": "1lpbTWXmBdcfVrKJU_6F4Hm9pPEwWkxuU",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1Zpakn6GJilSmKWRqCtbnIkYRbRH50u5uiZs30Q4STz0/edit",
+      "description": "레드폴리오 회계계시스템",
+      "debugMode": false
+    },
+    "admonz": {
+      "name": "애드몬즈",
+      "scriptId": "1MoANnLbSyhAePJoTfBygDtDHo6EC9s7ZRmXojndhf-yCkLEoKn_nDZPD",
+      "spreadsheetId": "11l453PMDqQpdKFBOrCj3nRQ67BI8NeMENYRCN1DOLsw",
+      "folderId": "1uJ4xWTjYlTAiJCZk5zzQUYZx3xGoHdpB",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/11l453PMDqQpdKFBOrCj3nRQ67BI8NeMENYRCN1DOLsw/edit",
+      "description": "애드몬즈 회계계시스템",
+      "debugMode": false
+    },
+    "thesmartn": {
+      "name": "더스마트앤",
+      "scriptId": "1bRgwBck0g9mgk5CAlBm_pwjgOEzJi4kg8C5MSPA6yt2fs-cUedSGq59p",
+      "spreadsheetId": "1AnL52eHs9E6yoXmolXLKrE-Z0kUUA2rccikgNtWSQ1Y",
+      "folderId": "1aOsEPbzMXUhwcltX0Cg2eWXHYVwdRPua",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1AnL52eHs9E6yoXmolXLKrE-Z0kUUA2rccikgNtWSQ1Y/edit",
+      "description": "더스마트앤 회계계시스템",
+      "debugMode": false
+    },
+    "thesmartnmutual": {
+      "name": "더스마트앤협동조합",
+      "scriptId": "1v5JWhMdSFhrbynad6ap1lr9G-3anOkZX5Ve7NuSb-jpIEzdQgkeWI7u9",
+      "spreadsheetId": "1Y2VEEOJU9Y2n8McLRqoxtK4N979RYriWhEfoj0bY2t8",
+      "folderId": "1dgE-QSPIROUBeUDxIxBBNbhA2oQ2iRU7",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1Y2VEEOJU9Y2n8McLRqoxtK4N979RYriWhEfoj0bY2t8/edit",
+      "description": "더스마트앤협동조합 회계계시스템",
+      "debugMode": false
+    },
+    "haerimcnp": {
+      "name": "해림씨앤피",
+      "scriptId": "15bKA93Qm8A36pnts25zB3X42x2IOFJmYh3bFFDbIwQUh674x0JXrhBUb",
+      "spreadsheetId": "1soPCWXpeniBMXdZ7UGQiW_3qHlMdBd7ss7U3wcqrclA",
+      "folderId": "1gk2YHJwUniQdYzQfUBVhqzfIIS7cOAOK",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1soPCWXpeniBMXdZ7UGQiW_3qHlMdBd7ss7U3wcqrclA/edit",
+      "description": "해림씨앤피 회계계시스템",
+      "debugMode": false
     }
   },
   "default": "development"

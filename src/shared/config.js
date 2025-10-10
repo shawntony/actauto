@@ -7,29 +7,61 @@
 
 // ==================== 스프레드시트 환경 ====================
 
-// 스프레드시트 환경 목록
-const SPREADSHEETS = [
+// 스프레드시트 환경 목록 (Google Apps Script 전역 변수로 var 사용)
+var SPREADSHEETS = [
   {
     id: '1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8',
     name: '유니스 (소스)',
     isSource: true
   },
   {
-    id: '1QNQwhOCU0fJpn19BkxpyNUi6bvdAYcgOIPTAM6rdwZ0',
-    name: '스마트비즈센터'
+    id: '1-gOcefZlaoDuLpIvt2LGednjbdYKmOSou25-j3_hrAI',
+    name: '케이제이와이'
   },
   {
-    id: '1xmrR4KLWf2S7J4IQgHrJiIUEb4PCC9aUI7Mwbq29PcU',
-    name: '스마트비즈센터1'
+    id: '1IbuZ1rGMBtzdAYiCtekmHaTDmkN606knXmgTjGjiHYQ',
+    name: '안앤드안어드바이저'
   },
   {
-    id: '1GjeKgw6c7h5WW1Y8u-v3ixPG6LNX9owf5rZrho9zdkU',
-    name: '스마트비즈센터2'
+    id: '151gQ0GEpDvairtgMdqeYqjksQJxaNyfCJiz_-s8_sDA',
+    name: '엘앤엘호라이즌'
+  },
+  {
+    id: '1DWekXZ1i5xLuXxe-c1PgClOU9dtYGiNYOHM7NpakjO0',
+    name: '티앤디'
+  },
+  {
+    id: '1-gqj3uFZXgP272O5e6ipcEpnF8rP_eAa_H4lppv0gJI',
+    name: '하누리MC'
+  },
+  {
+    id: '1C79JTdkepkynRyBWiTo7ECtnt55nK46IDw8L6CH_k8I',
+    name: '라우뎀'
+  },
+  {
+    id: '1Zpakn6GJilSmKWRqCtbnIkYRbRH50u5uiZs30Q4STz0',
+    name: '레드폴리오'
+  },
+  {
+    id: '11l453PMDqQpdKFBOrCj3nRQ67BI8NeMENYRCN1DOLsw',
+    name: '애드몬즈'
+  },
+  {
+    id: '1AnL52eHs9E6yoXmolXLKrE-Z0kUUA2rccikgNtWSQ1Y',
+    name: '더스마트앤'
+  },
+  {
+    id: '1Y2VEEOJU9Y2n8McLRqoxtK4N979RYriWhEfoj0bY2t8',
+    name: '더스마트앤협동조합'
+  },
+  {
+    id: '1soPCWXpeniBMXdZ7UGQiW_3qHlMdBd7ss7U3wcqrclA',
+    name: '해림씨앤피'
   }
 ];
 
 // 소스 스프레드시트 ID (환경 생성 스크립트용)
-const SOURCE_SPREADSHEET_ID = '1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8';
+var SOURCE_SPREADSHEET_ID = '1RFpK_S04ZSIOPxhmpjhJjKZuQlBDFhmTQ5gwJpjYJG8';
 
 /**
  * 소스 스프레드시트 가져오기
@@ -68,7 +100,7 @@ function getSpreadsheetByName(name) {
 
 // ==================== 시트 이름 상수 ====================
 
-const SHEET_NAMES = {
+var SHEET_NAMES = {
   // 공통 시트
   COMPANY_INFO: '업체정보',
   PAYROLL: '급여지급내역',
@@ -83,7 +115,7 @@ const SHEET_NAMES = {
 
 // ==================== 배치 처리 설정 ====================
 
-const BATCH_CONFIG = {
+var BATCH_CONFIG = {
   MAX_EXECUTION_TIME: 3 * 60 * 1000,  // 3분
   SHEETS_PER_BATCH: 3,                // 배치당 시트 수
   BATCH_DELAY: 60 * 1000              // 배치 간 대기 시간 (1분)
@@ -91,7 +123,7 @@ const BATCH_CONFIG = {
 
 // ==================== 지연 시간 설정 ====================
 
-const DELAY_CONFIG = {
+var DELAY_CONFIG = {
   SHORT: 500,           // 0.5초 - 일반적인 짧은 대기
   STANDARD: 1000,       // 1초 - 기본 대기 시간
   LONG: 2000,           // 2초 - 긴 대기 시간
@@ -102,7 +134,7 @@ const DELAY_CONFIG = {
 
 // ==================== 알림 설정 ====================
 
-const NOTIFICATION_CONFIG = {
+var NOTIFICATION_CONFIG = {
   ENABLED: true,                    // 알림 활성화 여부
   SEND_ON_ERROR: true,              // 오류 발생 시 알림
   SEND_ON_COMPLETION: true,         // 완료 시 알림
@@ -111,9 +143,19 @@ const NOTIFICATION_CONFIG = {
   SUBJECT_PREFIX: '[자동화시스템]'  // 이메일 제목 접두사
 };
 
-// Google Apps Script 환경에서만 export (Node.js에서는 무시됨)
+// Google Apps Script 환경에서 전역으로 노출 (Apps Script는 var를 전역으로 만듦)
+if (typeof module === 'undefined') {
+  // Google Apps Script 환경 - 전역 변수로 노출
+  this.SPREADSHEETS = SPREADSHEETS;
+  this.SOURCE_SPREADSHEET_ID = SOURCE_SPREADSHEET_ID;
+  this.SHEET_NAMES = SHEET_NAMES;
+  this.BATCH_CONFIG = BATCH_CONFIG;
+  this.DELAY_CONFIG = DELAY_CONFIG;
+  this.NOTIFICATION_CONFIG = NOTIFICATION_CONFIG;
+}
+
+// Node.js 환경에서만 export
 if (typeof module !== 'undefined' && module.exports) {
-  // Node.js 환경
   module.exports = {
     SPREADSHEETS,
     SOURCE_SPREADSHEET_ID,

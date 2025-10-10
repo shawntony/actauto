@@ -1,0 +1,21 @@
+이제 아래 환경도 완전 자동으로 만들어 주세요
+환경이름 : KH패밀리오피스
+폴더 : 내드라이버>법이관리스재무관리>KH패밀리오피스>은행거래내역
+스프레드시트 생성 : KH패밀리오피스 폴더 내에서 생성
+스프레드시트 파일 이름 : 법인재무관리_KH패밀리오피스
+
+ cd C:\Users\gram\myautomation\actauto
+  node scripts/create-new-environment.js <haerimcnp> <해림씨앤피> "해림씨앤피 회계계시스템"
+
+ corp-kanban 프로그램에 새로운 환경을 추가
+  cd corp-kanban
+  npm run sync:environments
+
+
+  Nas 개발 서버 실행 명령어
+
+   Synology NAS
+
+  ssh shawntony@thesmartn.synology.me -p 2022
+  cd /volume1/web/actauto/corp-kanban
+  npm run dev:nas
