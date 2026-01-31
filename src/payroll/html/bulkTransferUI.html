@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    /* 전역 스타일 */
+    body {
+      font-family: 'Google Sans', Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      font-size: 14px;
+      color: #202124;
+    }
+
+    /* 섹션 스타일 */
+    .section {
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #1a73e8;
+    }
+
+    /* 입력 필드 */
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    #monthSelect {
+      flex: 1;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+    }
+    .btn-secondary {
+      padding: 8px 16px;
+      background: #fff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #1a73e8;
+      font-weight: 500;
+    }
+    .btn-secondary:hover {
+      background: #f8f9fa;
+    }
+
+    /* 검색 및 필터 */
+    .filter-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    #searchInput {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .btn-icon {
+      padding: 8px 16px;
+      background: #fff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn-icon:hover {
+      background: #f8f9fa;
+    }
+
+    /* 사람 목록 */
+    .people-list {
+      max-height: 350px;
+      overflow-y: auto;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      background: #fff;
+    }
+    .person-item {
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .person-item:hover:not(.no-bank) {
+      background: #f8f9fa;
+    }
+    .person-item:last-child {
+      border-bottom: none;
+    }
+    .person-item.no-bank {
+      background: #fff3cd;
+    }
+
+    /* 체크박스 */
+    input[type="checkbox"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    input[type="checkbox"]:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    /* 정보 표시 */
+    .person-info {
+      flex: 1;
+    }
+    .person-name {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .person-details {
+      font-size: 13px;
+      color: #5f6368;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 10px;
+    }
+    .badge-warning {
+      background: #f59e0b;
+      color: #fff;
+    }
+
+    /* 통계 표시 */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+    .stat-item {
+      padding: 8px;
+      background: #fff;
+      border-radius: 4px;
+    }
+    .stat-label {
+      color: #5f6368;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+    .stat-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #202124;
+    }
+    .stat-value.highlight {
+      color: #1a73e8;
+    }
+
+    /* 입금통장표시 */
+    .deposit-label {
+      padding: 12px;
+      background: #e8f0fe;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    .deposit-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .deposit-label-row:last-child {
+      margin-bottom: 0;
+    }
+    .deposit-label-title {
+      font-size: 13px;
+      color: #5f6368;
+    }
+    .deposit-label-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a73e8;
+    }
+
+    /* 경고 메시지 */
+    .warning-box {
+      padding: 10px 12px;
+      background: #fff3cd;
+      border: 1px solid #ffcc00;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      color: #856404;
+    }
+    .warning-box strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* 버튼 */
+    .button-group {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 24px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: #1a73e8;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #1557b0;
+    }
+    .btn-primary:disabled {
+      background: #dadce0;
+      cursor: not-allowed;
+    }
+    .btn-cancel {
+      background: #fff;
+      color: #5f6368;
+      border: 1px solid #dadce0;
+    }
+    .btn-cancel:hover {
+      background: #f8f9fa;
+    }
+
+    /* 로딩 및 메시지 */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #5f6368;
+    }
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #1a73e8;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #5f6368;
+    }
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <!-- 급여기준월 선택 -->
+  <div class="section">
+    <div class="section-title">📅 급여기준월</div>
+    <div class="input-group">
+      <select id="monthSelect">
+        <option value="">월 선택...</option>
+      </select>
+      <button class="btn-secondary" onclick="loadData()">불러오기</button>
+    </div>
+  </div>
+
+  <!-- 검색 및 필터 -->
+  <div class="section" id="filterSection" style="display: none;">
+    <div class="filter-container">
+      <input type="text" id="searchInput" placeholder="이름 검색..." onkeyup="filterPeople()">
+      <button class="btn-icon" onclick="selectAll()">전체선택</button>
+      <button class="btn-icon" onclick="deselectAll()">전체해제</button>
+    </div>
+  </div>
+
+  <!-- 통계 -->
+  <div class="section" id="statsSection" style="display: none;">
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-label">선택 인원</div>
+        <div class="stat-value highlight" id="selectedCount">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">총 입금액</div>
+        <div class="stat-value" id="totalAmount">₩0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">은행정보 없음</div>
+        <div class="stat-value" id="noBankCount">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">평균 급여</div>
+        <div class="stat-value" id="avgAmount">₩0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 경고 메시지 -->
+  <div id="warningBox" class="warning-box" style="display: none;">
+    <strong>⚠️ 경고</strong>
+    <div id="warningMessage"></div>
+  </div>
+
+  <!-- 직원 목록 -->
+  <div class="section">
+    <div class="section-title">💳 입금 대상</div>
+    <div class="people-list" id="peopleList">
+      <div class="empty-state">
+        <div class="empty-state-icon">💼</div>
+        <div>급여기준월을 선택하고 불러오기 버튼을 클릭하세요.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 입금통장표시 -->
+  <div class="section" id="depositLabelSection" style="display: none;">
+    <div class="deposit-label">
+      <div class="deposit-label-row">
+        <span class="deposit-label-title">📝 입금통장표시</span>
+        <span class="deposit-label-value" id="depositLabel">-</span>
+      </div>
+      <div class="deposit-label-row">
+        <span class="deposit-label-title">📤 출금통장표시</span>
+        <span class="deposit-label-value" id="withdrawLabel">-</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 버튼 그룹 -->
+  <div class="button-group">
+    <button class="btn btn-cancel" onclick="google.script.host.close()">취소</button>
+    <button class="btn btn-secondary" onclick="downloadCSV()">📥 CSV 다운로드</button>
+    <button class="btn btn-primary" id="registerButton" onclick="registerData()" disabled>등록</button>
+  </div>
+
+  <script>
+    // 전역 변수
+    let allPeople = [];
+    let selectedMonth = '';
+
+    /**
+     * 초기화: 월 목록 가져오기
+     */
+    function initialize() {
+      google.script.run
+        .withSuccessHandler(onMonthsLoaded)
+        .withFailureHandler(onError)
+        .getAvailableMonthsFromPayrollDB();
+    }
+
+    /**
+     * 월 목록 로드 완료
+     */
+    function onMonthsLoaded(months) {
+      const select = document.getElementById('monthSelect');
+
+      if (!months || months.length === 0) {
+        select.innerHTML = '<option value="">데이터 없음</option>';
+        return;
+      }
+
+      select.innerHTML = '<option value="">월 선택...</option>' +
+        months.map(month => `<option value="${month}">${month}</option>`).join('');
+    }
+
+    /**
+     * 데이터 불러오기
+     */
+    function loadData() {
+      const month = document.getElementById('monthSelect').value;
+
+      if (!month) {
+        alert('급여기준월을 선택하세요.');
+        return;
+      }
+
+      selectedMonth = month;
+
+      // 로딩 표시
+      showLoading();
+
+      // 서버에서 데이터 가져오기
+      google.script.run
+        .withSuccessHandler(onDataLoaded)
+        .withFailureHandler(onError)
+        .readPayrollDBByMonth(month);
+    }
+
+    /**
+     * 로딩 표시
+     */
+    function showLoading() {
+      document.getElementById('peopleList').innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <div>데이터를 불러오는 중...</div>
+        </div>
+      `;
+    }
+
+    /**
+     * 데이터 로드 완료
+     */
+    function onDataLoaded(result) {
+      if (!result.success) {
+        alert(result.error || '데이터를 불러올 수 없습니다.');
+        showEmptyState();
+        return;
+      }
+
+      allPeople = result.data;
+      renderPeople(allPeople);
+      updateStats();
+      updateDepositLabel();
+
+      // UI 표시
+      document.getElementById('filterSection').style.display = 'block';
+      document.getElementById('statsSection').style.display = 'block';
+      document.getElementById('depositLabelSection').style.display = 'block';
+    }
+
+    /**
+     * 직원 목록 렌더링
+     */
+    function renderPeople(people) {
+      const listContainer = document.getElementById('peopleList');
+
+      if (!people || people.length === 0) {
+        showEmptyState();
+        return;
+      }
+
+      const html = people.map((person, index) => {
+        const hasBank = person.hasBank;
+        const itemClass = hasBank ? 'person-item' : 'person-item no-bank';
+        const badge = hasBank ? '' : '<span class="badge badge-warning">⚠ 은행없음</span>';
+        const bankInfo = hasBank
+          ? `🏦 ${person.bank} ***-${person.accountNumber.slice(-4)}`
+          : '🏦 (은행 정보 없음)';
+
+        return `
+          <div class="${itemClass}" data-index="${index}" onclick="togglePerson(${index})">
+            <input type="checkbox"
+                   id="person_${index}"
+                   data-index="${index}"
+                   onclick="event.stopPropagation(); updateStats()">
+            <div class="person-info">
+              <div class="person-name">
+                ${person.name}
+                ${badge}
+              </div>
+              <div class="person-details">
+                💰 ₩${person.netPay.toLocaleString()} | ${bankInfo}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      listContainer.innerHTML = html;
+    }
+
+    /**
+     * 빈 상태 표시
+     */
+    function showEmptyState() {
+      document.getElementById('peopleList').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🔍</div>
+          <div>해당 월에 데이터가 없습니다.</div>
+        </div>
+      `;
+    }
+
+    /**
+     * 체크박스 토글
+     */
+    function togglePerson(index) {
+      const checkbox = document.getElementById(`person_${index}`);
+      if (checkbox && !checkbox.disabled) {
+        checkbox.checked = !checkbox.checked;
+        updateStats();
+      }
+    }
+
+    /**
+     * 통계 업데이트
+     */
+    function updateStats() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      const selectedCheckboxes = Array.from(checkboxes).filter(cb => cb.checked);
+
+      const selectedCount = selectedCheckboxes.length;
+
+      let totalAmount = 0;
+      let noBankCount = 0;
+
+      selectedCheckboxes.forEach(cb => {
+        const index = parseInt(cb.dataset.index);
+        const person = allPeople[index];
+
+        totalAmount += person.netPay;
+        if (!person.hasBank) {
+          noBankCount++;
+        }
+      });
+
+      const avgAmount = selectedCount > 0 ? Math.round(totalAmount / selectedCount) : 0;
+
+      document.getElementById('selectedCount').textContent = selectedCount;
+      document.getElementById('totalAmount').textContent = '₩' + totalAmount.toLocaleString();
+      document.getElementById('noBankCount').textContent = noBankCount;
+      document.getElementById('avgAmount').textContent = '₩' + avgAmount.toLocaleString();
+
+      // 경고 메시지
+      if (noBankCount > 0) {
+        document.getElementById('warningBox').style.display = 'block';
+        document.getElementById('warningMessage').textContent =
+          `${noBankCount}명의 은행 정보가 없습니다. 등록은 가능하지만 은행/계좌 컬럼이 빈칸으로 저장됩니다.`;
+      } else {
+        document.getElementById('warningBox').style.display = 'none';
+      }
+
+      // 등록 버튼 활성화/비활성화
+      document.getElementById('registerButton').disabled = selectedCount === 0;
+      document.getElementById('registerButton').textContent =
+        selectedCount > 0 ? `등록 (${selectedCount}명)` : '등록';
+    }
+
+    /**
+     * 입금통장표시 업데이트
+     */
+    function updateDepositLabel() {
+      if (!selectedMonth) return;
+
+      const label = selectedMonth + '급여';
+      document.getElementById('depositLabel').textContent = label;
+      document.getElementById('withdrawLabel').textContent = label;
+    }
+
+    /**
+     * 전체 선택
+     */
+    function selectAll() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(cb => cb.checked = true);
+      updateStats();
+    }
+
+    /**
+     * 전체 해제
+     */
+    function deselectAll() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(cb => cb.checked = false);
+      updateStats();
+    }
+
+    /**
+     * 검색 필터
+     */
+    function filterPeople() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+      if (!searchTerm) {
+        renderPeople(allPeople);
+        return;
+      }
+
+      const filtered = allPeople.filter(person =>
+        person.name.toLowerCase().includes(searchTerm)
+      );
+
+      renderPeople(filtered);
+    }
+
+    /**
+     * 데이터 등록
+     */
+    function registerData() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+
+      if (checkboxes.length === 0) {
+        alert('등록할 직원을 선택하세요.');
+        return;
+      }
+
+      // 선택된 데이터 수집
+      const selectedData = Array.from(checkboxes).map(cb => {
+        const index = parseInt(cb.dataset.index);
+        return allPeople[index];
+      });
+
+      // 확인 메시지
+      const depositLabel = selectedMonth + '급여';
+      if (!confirm(`${selectedData.length}명의 데이터를 대량이체 시트에 등록하시겠습니까?\n\n입금통장표시: ${depositLabel}`)) {
+        return;
+      }
+
+      // 등록 중 표시
+      document.getElementById('registerButton').disabled = true;
+      document.getElementById('registerButton').textContent = '등록 중...';
+
+      // 서버 호출
+      google.script.run
+        .withSuccessHandler(onRegisterComplete)
+        .withFailureHandler(onError)
+        .createBulkTransferData(selectedMonth, selectedData);
+    }
+
+    /**
+     * 등록 완료
+     */
+    function onRegisterComplete(result) {
+      if (!result.success) {
+        alert('등록 실패: ' + (result.error || '알 수 없는 오류'));
+        document.getElementById('registerButton').disabled = false;
+        document.getElementById('registerButton').textContent = '등록';
+        return;
+      }
+
+      // 등록 완료 후 자동으로 CSV 다운로드
+      downloadCSVAfterRegister(result);
+    }
+
+    /**
+     * 등록 완료 후 CSV 자동 다운로드
+     */
+    function downloadCSVAfterRegister(registerResult) {
+      google.script.run
+        .withSuccessHandler(function(csvResult) {
+          if (csvResult.success) {
+            // CSV 다운로드
+            const blob = new Blob([csvResult.csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+
+            link.setAttribute('href', url);
+            link.setAttribute('download', csvResult.filename);
+            link.style.visibility = 'hidden';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            // 완료 메시지 (CSV 다운로드 포함)
+            const message = `
+대량이체 등록 완료!
+
+✅ 대량이체 등록: ${registerResult.count}명
+✅ 입금처리여부 업데이트: ${registerResult.updatedCount || 0}명
+✅ CSV 파일 다운로드: ${csvResult.filename} (${csvResult.rowCount}건)
+📝 입금통장표시: ${registerResult.depositLabel}
+📍 위치: 대량이체 시트 ${registerResult.startRow}~${registerResult.endRow}행
+
+CSV 파일이 다운로드되었습니다.
+다운로드 폴더에서 파일을 확인하고
+C:\\Users\\gram\\Desktop\\더존업무처리 폴더로 이동하세요.
+            `.trim();
+
+            alert(message);
+            google.script.host.close();
+          } else {
+            // CSV 생성 실패해도 등록은 성공
+            const message = `
+대량이체 등록 완료!
+
+✅ 대량이체 등록: ${registerResult.count}명
+✅ 입금처리여부 업데이트: ${registerResult.updatedCount || 0}명
+⚠️ CSV 다운로드 실패: ${csvResult.error}
+📝 입금통장표시: ${registerResult.depositLabel}
+📍 위치: 대량이체 시트 ${registerResult.startRow}~${registerResult.endRow}행
+
+등록은 완료되었으나 CSV 다운로드에 실패했습니다.
+"CSV 다운로드" 버튼을 눌러 수동으로 다운로드해주세요.
+            `.trim();
+
+            alert(message);
+            google.script.host.close();
+          }
+        })
+        .withFailureHandler(function(error) {
+          // CSV 다운로드 실패해도 등록은 성공
+          const message = `
+대량이체 등록 완료!
+
+✅ 대량이체 등록: ${registerResult.count}명
+✅ 입금처리여부 업데이트: ${registerResult.updatedCount || 0}명
+⚠️ CSV 다운로드 오류
+📝 입금통장표시: ${registerResult.depositLabel}
+📍 위치: 대량이체 시트 ${registerResult.startRow}~${registerResult.endRow}행
+
+등록은 완료되었으나 CSV 다운로드에 실패했습니다.
+          `.trim();
+
+          alert(message);
+          google.script.host.close();
+        })
+        .exportBulkTransferCSV();
+    }
+
+    /**
+     * 오류 처리
+     */
+    function onError(error) {
+      alert('오류 발생: ' + error.message);
+      document.getElementById('registerButton').disabled = false;
+      document.getElementById('registerButton').textContent = '등록';
+    }
+
+    /**
+     * CSV 다운로드
+     */
+    function downloadCSV() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (!result.success) {
+            alert('CSV 생성 실패: ' + (result.error || '알 수 없는 오류'));
+            return;
+          }
+
+          // Blob 생성 및 다운로드
+          const blob = new Blob([result.csv], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement('a');
+          const url = URL.createObjectURL(blob);
+
+          link.setAttribute('href', url);
+          link.setAttribute('download', result.filename);
+          link.style.visibility = 'hidden';
+
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          URL.revokeObjectURL(url);
+
+          alert(`CSV 파일 다운로드 완료!\n\n파일명: ${result.filename}\n데이터: ${result.rowCount}건\n\n다운로드 폴더에서 파일을 확인하고\nC:\\Users\\gram\\Desktop\\더존업무처리 폴더로 이동하세요.`);
+        })
+        .withFailureHandler(function(error) {
+          alert('CSV 다운로드 오류: ' + error.message);
+        })
+        .exportBulkTransferCSV();
+    }
+
+    // 초기화
+    initialize();
+  </script>
+</body>
+</html>

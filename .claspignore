@@ -26,3 +26,4 @@ claudedocs/
 # Backup files
 *.backup.js
 *.deploy.js
+**/backup_*/

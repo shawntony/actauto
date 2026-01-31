@@ -59,30 +59,51 @@ function readDazoneDownloadData(month) {
     const dataRange = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn());
     const rawData = dataRange.getValues();
 
-    // 데이터 변환 (필요한 컬럼만 추출)
+    // 데이터 변환 (월급여더존다운로드 전체 컬럼 읽기)
+    // ⚠️ 실제 시트 구조 기준 (2026-01-31 최종 검증 완료)
+    // A(0):사원코드, B(1):사원명, C(2):부서, D(3):직급, E(4):직종
+    // F(5):기본급, G(6):상여, H(7):식대수당, I(8):직책수당, J(9):연장근로수당
+    // K(10):연차수당, L(11):야간수당, M(12):공휴일특근수당, N(13):기타수당
+    // O(14):지급액계, P(15):국민연금, Q(16):건강보험, R(17):고용보험, S(18):장기요양보험료
+    // T(19):소득세, U(20):지방소득세, V(21):연말정산소득세, W(22):연말정산지방소득세
+    // X(23):연말정산선불특, Y(24):학자금상환액, Z(25):공제액계, AA(26):차인지급액
     const data = rawData.map((row, index) => {
       return {
         rowIndex: index + 2,
+        // 기본 정보 (A~E)
+        employeeCode: String(row[0] || '').trim(),  // A: 사원코드
         name: String(row[1] || '').trim(),          // B: 사원명
-        totalSalary: Number(row[13]) || 0,          // N: 총지급액
-        baseSalary: Number(row[4]) || 0,            // E: 기본급
-        bonus: Number(row[5]) || 0,                 // F: 상여
-        mealAllowance: Number(row[6]) || 0,         // G: 식대수당
-        positionAllowance: Number(row[7]) || 0,     // H: 직책수당
-        overtimeAllowance: Number(row[8]) || 0,     // I: 연장근로수당
-        annualLeaveAllowance: Number(row[9]) || 0,  // J: 연차수당
-        nightAllowance: Number(row[10]) || 0,       // K: 야간수당
-        holidayAllowance: Number(row[11]) || 0,     // L: 공휴일특근수당
-        otherAllowance: Number(row[12]) || 0,       // M: 기타수당
-        nationalPension: Number(row[14]) || 0,      // O: 국민연금
-        healthInsurance: Number(row[15]) || 0,      // P: 건강보험
-        employmentInsurance: Number(row[16]) || 0,  // Q: 고용보험
-        longTermCare: Number(row[17]) || 0,         // R: 장기요양보험
-        employerInsurance: Number(row[20]) || 0,    // U: 사업주고용보험
-        industrialAccident: Number(row[21]) || 0,   // V: 산재보험료
-        incomeTax: Number(row[18]) || 0,            // S: 소득세
-        localIncomeTax: Number(row[19]) || 0,       // T: 지방소득세
-        netPay: Number(row[22]) || 0                // W: 차인지급액
+        department: String(row[2] || '').trim(),    // C: 부서
+        position: String(row[3] || '').trim(),      // D: 직급
+        jobType: String(row[4] || '').trim(),       // E: 직종
+        // 급여 항목 (F~O)
+        baseSalary: Number(row[5]) || 0,            // F: 기본급
+        bonus: Number(row[6]) || 0,                 // G: 상여
+        mealAllowance: Number(row[7]) || 0,         // H: 식대수당
+        positionAllowance: Number(row[8]) || 0,     // I: 직책수당
+        overtimeAllowance: Number(row[9]) || 0,     // J: 연장근로수당
+        annualLeaveAllowance: Number(row[10]) || 0, // K: 연차수당
+        nightAllowance: Number(row[11]) || 0,       // L: 야간수당
+        holidayAllowance: Number(row[12]) || 0,     // M: 공휴일특근수당
+        otherAllowance: Number(row[13]) || 0,       // N: 기타수당
+        totalSalary: Number(row[14]) || 0,          // O: 지급액계
+        // 보험 항목 (P~S)
+        nationalPension: Number(row[15]) || 0,      // P: 국민연금
+        healthInsurance: Number(row[16]) || 0,      // Q: 건강보험
+        employmentInsurance: Number(row[17]) || 0,  // R: 고용보험
+        longTermCare: Number(row[18]) || 0,         // S: 장기요양보험료
+        // 세금 항목 (T~U)
+        incomeTax: Number(row[19]) || 0,            // T: 소득세
+        localIncomeTax: Number(row[20]) || 0,       // U: 지방소득세
+        // 연말정산 항목 (V~X)
+        yearEndIncomeTax: Number(row[21]) || 0,     // V: 연말정산소득세
+        yearEndLocalTax: Number(row[22]) || 0,      // W: 연말정산지방소득세
+        yearEndAdvance: Number(row[23]) || 0,       // X: 연말정산선불특
+        // 기타 공제 (Y)
+        scholarshipRepay: Number(row[24]) || 0,     // Y: 학자금상환액
+        // 합계 (Z~AA)
+        totalDeduction: Number(row[25]) || 0,       // Z: 공제액계
+        netPay: Number(row[26]) || 0                // AA: 차인지급액
       };
     }).filter(item => item.name); // 이름이 있는 항목만
 
@@ -235,69 +256,70 @@ function getEmployeeBankInfo(name) {
  * @param {string} month - 급여기준월 (YYYY-MM-DD)
  * @param {Object} dazoneRow - 더존 다운로드 행
  * @param {Object} bankInfo - 은행 정보 {bank, accountNumber}
- * @return {Array} 30개 컬럼 배열 (A~AD)
+ * @return {Array} 32개 컬럼 배열 (A~AF)
  */
 function convertDazoneToPayrollDB(month, dazoneRow, bankInfo) {
-  // 월지급DB 30개 컬럼 생성
-  const row = new Array(30).fill('');
+  // 월지급DB 32개 컬럼 생성 (A~AF)
+  // 구조: 급여기준월(A) + 월급여더존다운로드 전체(B~AB) + 입금정보(AC~AF)
+  const row = new Array(32).fill('');
 
-  // A: 급여기준월 (YYYY-MM-DD 말일)
-  row[0] = new Date(month);
+  // A: 급여기준월 (YYYY-MM-DD 문자열 형식)
+  row[0] = month;
 
-  // B: 이름
-  row[1] = dazoneRow.name;
+  // B~E: 기본 정보 (더존 A~D 복사)
+  row[1] = dazoneRow.employeeCode || '';  // B: 사원코드
+  row[2] = dazoneRow.name || '';          // C: 사원명
+  row[3] = dazoneRow.department || '';    // D: 부서
+  row[4] = dazoneRow.position || '';      // E: 직급
+  row[5] = dazoneRow.jobType || '';       // F: 직종
 
-  // C: 총급여
-  row[2] = dazoneRow.totalSalary;
+  // G~O: 급여 항목 (더존 F~N 복사)
+  row[6] = dazoneRow.baseSalary || 0;           // G: 기본급
+  row[7] = dazoneRow.bonus || 0;                // H: 상여
+  row[8] = dazoneRow.mealAllowance || 0;        // I: 식대수당
+  row[9] = dazoneRow.positionAllowance || 0;    // J: 직책수당
+  row[10] = dazoneRow.overtimeAllowance || 0;   // K: 연장근로수당
+  row[11] = dazoneRow.annualLeaveAllowance || 0;// L: 연차수당
+  row[12] = dazoneRow.nightAllowance || 0;      // M: 야간수당
+  row[13] = dazoneRow.holidayAllowance || 0;    // N: 공휴일특근수당
+  row[14] = dazoneRow.otherAllowance || 0;      // O: 기타수당
 
-  // D~L: 급여 항목 (10개)
-  row[3] = dazoneRow.baseSalary;
-  row[4] = dazoneRow.bonus;
-  row[5] = dazoneRow.mealAllowance;
-  row[6] = dazoneRow.positionAllowance;
-  row[7] = dazoneRow.overtimeAllowance;
-  row[8] = dazoneRow.annualLeaveAllowance;
-  row[9] = dazoneRow.nightAllowance;
-  row[10] = dazoneRow.holidayAllowance;
-  row[11] = dazoneRow.otherAllowance;
+  // P: 지급액계 (더존 O 복사)
+  row[15] = dazoneRow.totalSalary || 0;         // P: 지급액계
 
-  // M~R: 보험 항목 (6개)
-  row[12] = dazoneRow.nationalPension;
-  row[13] = dazoneRow.healthInsurance;
-  row[14] = dazoneRow.employmentInsurance;
-  row[15] = dazoneRow.longTermCare;
-  row[16] = dazoneRow.employerInsurance;  // 사업주추가고용보험료
-  row[17] = dazoneRow.industrialAccident; // 산재보험료
+  // Q~T: 보험 항목 (더존 P~S 복사)
+  row[16] = dazoneRow.nationalPension || 0;     // Q: 국민연금
+  row[17] = dazoneRow.healthInsurance || 0;     // R: 건강보험
+  row[18] = dazoneRow.employmentInsurance || 0; // S: 고용보험
+  row[19] = dazoneRow.longTermCare || 0;        // T: 장기요양보험료
 
-  // S~V: 세금 항목 (4개)
-  row[18] = dazoneRow.incomeTax;
-  row[19] = dazoneRow.localIncomeTax;
-  row[20] = 0; // U: 연말정산 소득세 (빈칸)
-  row[21] = 0; // V: 연말정산 지방소득세 (빈칸)
+  // U~V: 세금 항목 (더존 T~U 복사)
+  row[20] = dazoneRow.incomeTax || 0;           // U: 소득세
+  row[21] = dazoneRow.localIncomeTax || 0;      // V: 지방소득세
 
-  // W: 세후지급액
-  row[22] = dazoneRow.netPay || '';
+  // W~Y: 연말정산 항목 (더존 V~X 복사)
+  row[22] = dazoneRow.yearEndIncomeTax || 0;    // W: 연말정산소득세
+  row[23] = dazoneRow.yearEndLocalTax || 0;     // X: 연말정산지방소득세
+  row[24] = dazoneRow.yearEndAdvance || 0;      // Y: 연말정산선불특
 
-  // X: 차인지급액계 (W와 동일)
-  row[23] = dazoneRow.netPay || '';
+  // Z: 학자금상환액 (더존 Y 복사)
+  row[25] = dazoneRow.scholarshipRepay || 0;    // Z: 학자금상환액
 
-  // Y: 사업주부담1 (Q와 동일)
-  row[24] = dazoneRow.employerInsurance;
+  // AA: 공제액계 (더존 Z 복사)
+  row[26] = dazoneRow.totalDeduction || 0;      // AA: 공제액계
 
-  // Z: 산재보험료2 (R와 동일)
-  row[25] = dazoneRow.industrialAccident;
+  // AB: 차인지급액 (더존 AA 복사)
+  row[27] = dazoneRow.netPay || 0;              // AB: 차인지급액
 
-  // AA: 총비용 (C + Q + R)
-  row[26] = (dazoneRow.totalSalary || 0) +
-            (dazoneRow.employerInsurance || 0) +
-            (dazoneRow.industrialAccident || 0);
+  // AC: 입금처리여부 (시스템 기본값)
+  row[28] = '대기';
 
-  // AB: 입금처리여부
-  row[27] = '대기';
+  // AD~AE: 은행 정보 (급여데이터에서 조회)
+  row[29] = bankInfo.bank || '';                // AD: 은행
+  row[30] = bankInfo.accountNumber || '';       // AE: 계좌번호
 
-  // AC~AD: 은행 정보
-  row[28] = bankInfo.bank || '';
-  row[29] = bankInfo.accountNumber || '';
+  // AF: 예금주 (사원명과 동일)
+  row[31] = dazoneRow.name || '';               // AF: 예금주
 
   return row;
 }
@@ -364,6 +386,24 @@ function saveToPayrollDBFromDazone(month, selectedData) {
       }
     });
 
+    // 저장 완료 후 월급여더존다운로드 시트 데이터 삭제
+    let deletedRows = 0;
+    try {
+      const downloadSheet = ss.getSheetByName('월급여더존다운로드');
+      if (downloadSheet && saved.length > 0) {
+        const lastRow = downloadSheet.getLastRow();
+        if (lastRow >= 2) {
+          // 2행부터 마지막 행까지 삭제 (헤더는 유지)
+          const rowsToDelete = lastRow - 1;
+          downloadSheet.deleteRows(2, rowsToDelete);
+          deletedRows = rowsToDelete;
+        }
+      }
+    } catch (deleteError) {
+      Logger.log('월급여더존다운로드 삭제 오류: ' + deleteError.message);
+      // 삭제 오류는 치명적이지 않으므로 계속 진행
+    }
+
     return {
       success: true,
       saved: saved,
@@ -373,7 +413,8 @@ function saveToPayrollDBFromDazone(month, selectedData) {
         total: selectedData.length,
         savedCount: saved.length,
         duplicateCount: duplicates.length,
-        errorCount: errors.length
+        errorCount: errors.length,
+        deletedRows: deletedRows
       }
     };
 

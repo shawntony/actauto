@@ -215,6 +215,141 @@
       "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1soPCWXpeniBMXdZ7UGQiW_3qHlMdBd7ss7U3wcqrclA/edit",
       "description": "해림씨앤피 회계계시스템",
       "debugMode": false
+    },
+    "bnbk": {
+      "name": "비앤비케이",
+      "scriptId": "1I4-2pYGfburXbKWsvuewGNC9ogHZhrFFzZD8BAp6zELMKpfVufAuSPeM",
+      "spreadsheetId": "1o2F_b_w2ZOcs27JSoP6VVN7id8QoujI73yzV2ngqFh4",
+      "folderId": "1D5WtkAGzx54jEfKAC_FuAPATi89ajGQp",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1o2F_b_w2ZOcs27JSoP6VVN7id8QoujI73yzV2ngqFh4/edit",
+      "description": "비앤비케이 회계시스템",
+      "debugMode": false
+    },
+    "theplayearth": {
+      "name": "더플레이어스",
+      "scriptId": "1JLPEe5v411K9tGKVtEEtjIA9s4GuCe74L_pj3d4P7W4Pc4fXSsn7AN-J",
+      "spreadsheetId": "1yJU6Uw5Xfd3Tc6VZzMvbMjHUl16lpQAC2Pq9s1eXLSI",
+      "folderId": "1H_TEKTC2bKE5o3zRxPJeiSY3dRa1ave4",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1yJU6Uw5Xfd3Tc6VZzMvbMjHUl16lpQAC2Pq9s1eXLSI/edit",
+      "description": "더플레이어스 회계시스템",
+      "debugMode": false
+    },
+    "kigm": {
+      "name": "KIGM",
+      "scriptId": "1woX4MgpfIyZH2oGkIUdC0xnZzISIdxmJFCqh9spzubKyy2dD7Pld1fIk",
+      "spreadsheetId": "1gysIpamJ2dkfULvxW5d3sijjH1nJf7BQE5ZmBZWyuvI",
+      "folderId": "1Qm0c0GwsGXSv6CDRQsKju36-4Yq-7bQ6",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1gysIpamJ2dkfULvxW5d3sijjH1nJf7BQE5ZmBZWyuvI/edit",
+      "description": "KIGM 회계시스템",
+      "debugMode": false
+    },
+    "kigmkimhae": {
+      "name": "KIGM김해",
+      "scriptId": "1mnSeBLMvA8FniLcmsVlVbAytadfEZ_N96TDZJZR6SExUdVcAUHHLfx-4",
+      "spreadsheetId": "1fUQlWkJi6igz5I9bVBW2PikYS1OakOWqXAfMNs7FYl4",
+      "folderId": "1a6U7GY_JD5YyxWbgJG8XXJgOmg-8ycak",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1fUQlWkJi6igz5I9bVBW2PikYS1OakOWqXAfMNs7FYl4/edit",
+      "description": "KIGM김해 회계시스템",
+      "debugMode": false
+    },
+    "kigmjejusaekdal": {
+      "name": "KIGM제주색달",
+      "scriptId": "14_vCBV3QyOrmH3VoDrHDk21jtd3EPW-9IbNPQIKlVFrLcfFuLOs9cMP4",
+      "spreadsheetId": "1TZSzldWEkYEqccwXxWkkX4D6lY4Qm85-T4E8zoQINc0",
+      "folderId": "1a97XRjMLG0f4GxieVFA4bmiDuv4qnFvL",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1TZSzldWEkYEqccwXxWkkX4D6lY4Qm85-T4E8zoQINc0/edit",
+      "description": "KIGM제주색달 회계시스템",
+      "debugMode": false
+    },
+    "kigmjejuhaye": {
+      "name": "KIGM제주하예",
+      "scriptId": "1lihTMELHxi01ITK5FTjbKtdNHfjXlDkJ9p2h2CW5V20LrnyihkQ7MnRT",
+      "spreadsheetId": "11-W428P8W8yyf1tiPiGS60gwX9gAYvFVLmjBvAIhg_8",
+      "folderId": "1e-QSh8ok-ks5ygYZAQ20uLzqXkgESILc",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/11-W428P8W8yyf1tiPiGS60gwX9gAYvFVLmjBvAIhg_8/edit",
+      "description": "KIGM제주하예 회계시스템",
+      "debugMode": false
+    },
+    "lawnfood": {
+      "name": "론푸드",
+      "scriptId": "1jNR5mehxUIs5pvCGIZZGzntJUa-e95zXPxSoGm1j4rY6ctFgtdLVfQJT",
+      "spreadsheetId": "1zvgZDL6GY6TfoD86iqY0y6kpHSoBl3H6t0PqkDpTc0g",
+      "folderId": "14DIUhE9oHoYo44z8MMaxlbV3bhMjay_b",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1zvgZDL6GY6TfoD86iqY0y6kpHSoBl3H6t0PqkDpTc0g/edit",
+      "description": "론푸드 회계시스템",
+      "debugMode": false
+    },
+    "lawnfoodkimhae": {
+      "name": "론푸드김해",
+      "scriptId": "1Y9QnCb77Fno8T6ywhGwBKCYsBqRhYjWrdwfc2lkEc_XFsMFv_M4zpPig",
+      "spreadsheetId": "1K8WfMOh80_7rZRkasRQ3EQO-Ik3JI7WX0uw8VBlXohA",
+      "folderId": "1-XH6fk5UJISqQ-SSG5WNyR_7bERgBI-t",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1K8WfMOh80_7rZRkasRQ3EQO-Ik3JI7WX0uw8VBlXohA/edit",
+      "description": "론푸드김해 회계시스템",
+      "debugMode": false
+    },
+    "lawnfoodyongpyeong": {
+      "name": "론푸드용평",
+      "scriptId": "15p_QyTJ825Poz7qmdmtUF7_kfO8m9bPF5fkXl1igJ3s-mEs15BejgT4F",
+      "spreadsheetId": "1qf1g9cPMiBL0U5NFmBK4EYbuxfCYH3n43XwVVv6jD3c",
+      "folderId": "18cabJ-fLbJphWz_o_mZVhb6eTL9ksaaG",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1qf1g9cPMiBL0U5NFmBK4EYbuxfCYH3n43XwVVv6jD3c/edit",
+      "description": "론푸드용평 회계시스템",
+      "debugMode": false
+    },
+    "lawnfoodchangwon": {
+      "name": "론푸드창원",
+      "scriptId": "1L1wDXnsG9fQNHvefdx6P5V2PhPLSyJuPDyDVDkrhGaQU5O98OxlXRTKA",
+      "spreadsheetId": "1k3bf3LNLkZqktP4GQkIzAPoSEwE7hdl3qDwRWKQc5kk",
+      "folderId": "1ZCawmSwXH_8kVoiprbnASzovt6dSS3mU",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1k3bf3LNLkZqktP4GQkIzAPoSEwE7hdl3qDwRWKQc5kk/edit",
+      "description": "론푸드창원 회계시스템",
+      "debugMode": false
+    },
+    "canandwill": {
+      "name": "캔앤윌",
+      "scriptId": "13Qnx2o3iXqcvBEkcV2V5QjOkLc209jZT_gIpWR4m39QkulXywLMeeyGw",
+      "spreadsheetId": "1h2UOKG_Cs-SrqmLISt7IsWLLtz75v1_zwOgWaO_wgAI",
+      "folderId": "1giyLU_yEITgue_aF-j2PjIooo5-eYWYe",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1h2UOKG_Cs-SrqmLISt7IsWLLtz75v1_zwOgWaO_wgAI/edit",
+      "description": "캔앤윌 회계시스템",
+      "debugMode": false
+    },
+    "coursek": {
+      "name": "코스패트롤케이",
+      "scriptId": "10apw0M5HejyK067l5Fwqa_367HiGr9GU1ao10sVd6S1vxOOfLRtilP39",
+      "spreadsheetId": "13HgfsWgT2JXhtdBzavJlztD3zzX0YByW-NBLOJq9yHw",
+      "folderId": "1kbsr7xUykIuY-ULkW7l0BOrr1P8Hvbr8",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/13HgfsWgT2JXhtdBzavJlztD3zzX0YByW-NBLOJq9yHw/edit",
+      "description": "코스패트롤케이 회계시스템",
+      "debugMode": false
+    },
+    "golfk": {
+      "name": "골프세미나케이",
+      "scriptId": "1jlZD6nrRUi2eCEQvDxyP45G3fpIpZReuxmXMCGaE3s9NSa4pcK6Eqg4E",
+      "spreadsheetId": "12XMpsMf3sdci5OqLoZw8wkw5WEpWdp1HfqpHclHmoFs",
+      "folderId": "1-TYzUaPRWvt-iyx4bySqHhOgbjhggkU1",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/12XMpsMf3sdci5OqLoZw8wkw5WEpWdp1HfqpHclHmoFs/edit",
+      "description": "골프세미나케이 회계시스템",
+      "debugMode": false
+    },
+    "lawnchina": {
+      "name": "론푸드차이나",
+      "scriptId": "1UkGDpNwbFd8yrKo6H7tQUzjEAMIfG9-NsGcleO7TysBD_UPZkd0-Nvvn",
+      "spreadsheetId": "1_uVk3GXegAnGs7COf2FBdawU_sGG_Uq-cYIz9Ms5tn4",
+      "folderId": "13A7bsi0f5Pl3FOMGM7AAAkFXi8VjGP9x",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1_uVk3GXegAnGs7COf2FBdawU_sGG_Uq-cYIz9Ms5tn4/edit",
+      "description": "론푸드차이나 회계시스템",
+      "debugMode": false
+    },
+    "khj": {
+      "name": "KHJ",
+      "scriptId": "1bDVEybqAlEnqvcxgdosaJ7cJVw6YA32hH81zQoqk6fEnn_DkQAfvbPnv",
+      "spreadsheetId": "1jc7_-ttWC7fwvrKSLAmg2V9G4bMPiQ9y7-BfcgXBa3I",
+      "folderId": "1EokUuK6o4OoH-l3Gp1ToI9rXAANIbWjm",
+      "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1jc7_-ttWC7fwvrKSLAmg2V9G4bMPiQ9y7-BfcgXBa3I/edit",
+      "description": "KHJ 회계시스템",
+      "debugMode": false
     }
   },
   "default": "development"

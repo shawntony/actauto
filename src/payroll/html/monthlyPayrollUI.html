@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    /* 전역 스타일 */
+    body {
+      font-family: 'Google Sans', Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      font-size: 14px;
+      color: #202124;
+    }
+
+    /* 섹션 스타일 */
+    .section {
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #1a73e8;
+    }
+
+    /* 월 선택 */
+    #monthSelect {
+      width: 200px;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+    }
+
+    /* 검색 및 필터 */
+    .filter-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    #searchInput {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .filter-dropdown {
+      padding: 8px;
+      min-width: 100px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* 사람 목록 */
+    .select-all {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+    .people-list {
+      max-height: 500px;
+      overflow-y: auto;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+    }
+    .person-item {
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .person-item:hover {
+      background: #f8f9fa;
+    }
+    .person-item:last-child {
+      border-bottom: none;
+    }
+    .person-item.duplicate {
+      background: #fff3cd;
+    }
+
+    /* 체크박스 */
+    input[type="checkbox"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    /* 상태 표시 */
+    .status-active {
+      color: #1a73e8;
+      font-weight: 500;
+    }
+    .status-inactive {
+      color: #9aa0a6;
+    }
+    .match-ok {
+      color: #34a853;
+    }
+    .match-error {
+      color: #ea4335;
+    }
+
+    /* 요약 */
+    .summary {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 15px 0;
+    }
+    .summary-item {
+      margin: 5px 0;
+    }
+    .warning {
+      color: #f9ab00;
+    }
+
+    /* 버튼 */
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 24px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    .btn-cancel {
+      background: #fff;
+      border: 1px solid #dadce0;
+      color: #5f6368;
+    }
+    .btn-cancel:hover {
+      background: #f8f9fa;
+    }
+    .btn-primary {
+      background: #1a73e8;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #1557b0;
+    }
+    .btn-primary:disabled {
+      background: #dadce0;
+      cursor: not-allowed;
+    }
+
+    /* 진행 상황 */
+    .progress-container {
+      display: none;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 24px;
+      background: #f0f0f0;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #1a73e8;
+      transition: width 0.3s;
+    }
+    .progress-info {
+      margin: 10px 0;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+    .completed-list {
+      color: #34a853;
+      margin-top: 10px;
+    }
+    .error-list {
+      color: #ea4335;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 초기 UI -->
+  <div id="mainUI">
+    <!-- 월 선택 섹션 -->
+    <div class="section">
+      <div class="section-title">📅 처리 월 선택</div>
+      <select id="monthSelect"></select>
+    </div>
+
+    <!-- 사람 선택 섹션 -->
+    <div class="section">
+      <div class="section-title">👥 처리 대상 선택</div>
+
+      <!-- 검색 및 필터 -->
+      <div class="filter-container">
+        <input type="text" id="searchInput" placeholder="🔍 이름 검색...">
+        <select id="statusFilter" class="filter-dropdown">
+          <option value="all">전체</option>
+          <option value="active">재직</option>
+          <option value="inactive">퇴사</option>
+        </select>
+        <select id="workplaceFilter" class="filter-dropdown">
+          <option value="all">근무위치</option>
+          <option value="headquarters">본사</option>
+          <option value="branch">본사외</option>
+        </select>
+        <select id="matchFilter" class="filter-dropdown">
+          <option value="all">매칭상태</option>
+          <option value="ok">매칭가능</option>
+          <option value="error">매칭불가</option>
+        </select>
+      </div>
+
+      <!-- 전체 선택 -->
+      <div class="select-all">
+        <label>
+          <input type="checkbox" id="selectAll">
+          전체 선택 <span id="totalStats"></span>
+        </label>
+      </div>
+
+      <!-- 사람 목록 -->
+      <div class="people-list" id="peopleList"></div>
+    </div>
+
+    <!-- 요약 섹션 -->
+    <div class="summary" id="summary">
+      <div class="summary-item">• 선택된 인원: <strong id="selectedCount">0</strong>명</div>
+      <div class="summary-item">• 재직: <span id="activeCount">0</span>명 | 퇴사: <span id="inactiveCount">0</span>명</div>
+      <div class="summary-item">• 본사: <span id="headquartersCount">0</span>명 | 본사외: <span id="branchCount">0</span>명</div>
+      <div class="summary-item">• 매칭 가능: <span id="matchOkCount">0</span>명 | 매칭 불가: <span id="matchErrorCount" class="warning">0</span>명</div>
+      <div id="duplicateWarning" style="display:none; color: #f9ab00; margin-top: 10px;">
+        ⚠️ 중복 처리: <span id="duplicateList"></span>
+      </div>
+    </div>
+
+    <!-- 버튼 -->
+    <div class="button-container">
+      <button class="btn-cancel" onclick="google.script.host.close()">취소</button>
+      <button id="executeBtn" class="btn-primary" onclick="executeCalculation()">실행</button>
+    </div>
+  </div>
+
+  <!-- 진행 상황 UI -->
+  <div id="progressUI" class="progress-container">
+    <div class="section-title">월지급 계산 처리 중...</div>
+    <div style="margin: 20px 0;">
+      <div>진행률: <span id="progressText">0/0 (0%)</span></div>
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+      </div>
+    </div>
+    <div class="progress-info">
+      <div>현재 처리 중: <strong id="currentPerson">-</strong></div>
+      <div id="currentStatus" style="margin-top: 5px; color: #5f6368;"></div>
+    </div>
+    <div style="margin-top: 20px;">
+      <div class="completed-list">완료된 인원: <span id="completedList">없음</span></div>
+      <div id="errorListContainer" style="display:none;">
+        <div class="error-list">❌ 오류 발생: <span id="errorList"></span></div>
+      </div>
+    </div>
+    <div class="button-container">
+      <button class="btn-cancel" onclick="cancelExecution()">취소</button>
+    </div>
+  </div>
+
+  <script>
+    // 전역 상태
+    let peopleData = [];
+    let selectedIndices = new Set();
+    let duplicateIndices = new Set();
+    let processingCanceled = false;
+
+    // 초기화
+    window.onload = function() {
+      initMonthOptions();
+      loadPeopleData();
+      setupEventListeners();
+    };
+
+    // 월 옵션 생성 (과거 6개월 ~ 미래 3개월)
+    function initMonthOptions() {
+      const select = document.getElementById('monthSelect');
+      const today = new Date();
+
+      for (let i = -6; i <= 3; i++) {
+        const date = new Date(today.getFullYear(), today.getMonth() + i, 1);
+        const month = formatMonth(date);
+        const option = document.createElement('option');
+        option.value = month;
+        option.textContent = month;
+        if (i === 0) option.selected = true;
+        select.appendChild(option);
+      }
+
+      select.addEventListener('change', function() {
+        checkDuplicates(this.value);
+      });
+    }
+
+    function formatMonth(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      return `${year}-${month}`;
+    }
+
+    // 사람 데이터 로드
+    function loadPeopleData() {
+      console.log('📊 데이터 로딩 시작...');
+      google.script.run
+        .withSuccessHandler(function(data) {
+          peopleData = data;
+          console.log('✅ 데이터 로드 완료:', data.length, '명');
+
+          // 처음 3명의 데이터 샘플 출력
+          if (data.length > 0) {
+            console.log('📋 첫 번째 사람:', data[0]);
+            console.log('  - 이름:', data[0].name);
+            console.log('  - 근무위치(원본):', data[0].workplace);
+            console.log('  - 근무위치(분류):', data[0].workplaceType);
+            console.log('  - 상태:', data[0].status);
+          }
+
+          // 근무위치 분포 확인
+          const hqCount = data.filter(p => p.workplaceType === 'headquarters').length;
+          const branchCount = data.filter(p => p.workplaceType === 'branch').length;
+          console.log('🏢 본사:', hqCount, '명 | 🏪 본사외:', branchCount, '명');
+
+          renderPeopleList();
+          updateSummary();
+          checkDuplicates(document.getElementById('monthSelect').value);
+        })
+        .withFailureHandler(function(error) {
+          console.error('❌ 데이터 로드 실패:', error);
+          alert('데이터 로드 실패: ' + error.message);
+        })
+        .getPeopleDataForPayroll();
+    }
+
+    // 사람 목록 렌더링
+    function renderPeopleList() {
+      const list = document.getElementById('peopleList');
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value;
+      const workplaceFilter = document.getElementById('workplaceFilter').value;
+      const matchFilter = document.getElementById('matchFilter').value;
+
+      console.log('🔍 필터 적용:', {
+        검색어: searchTerm || '없음',
+        상태필터: statusFilter,
+        근무위치필터: workplaceFilter,
+        매칭필터: matchFilter
+      });
+
+      list.innerHTML = '';
+
+      let activeCount = 0, inactiveCount = 0;
+      let headquartersCount = 0, branchCount = 0;
+      let filteredCount = 0;
+
+      peopleData.forEach((person, index) => {
+        // 필터링
+        if (searchTerm && !person.name.toLowerCase().includes(searchTerm)) return;
+        if (statusFilter !== 'all' && person.status !== statusFilter) return;
+        if (workplaceFilter !== 'all' && person.workplaceType !== workplaceFilter) return;
+        if (matchFilter !== 'all' && person.matchStatus !== matchFilter) return;
+
+        filteredCount++;
+
+        // 카운트
+        if (person.status === 'active') activeCount++;
+        else inactiveCount++;
+        if (person.workplaceType === 'headquarters') headquartersCount++;
+        else branchCount++;
+
+        // 아이템 생성
+        const item = document.createElement('div');
+        item.className = 'person-item';
+        if (duplicateIndices.has(index)) item.classList.add('duplicate');
+
+        const statusClass = person.status === 'active' ? 'status-active' : 'status-inactive';
+        const matchClass = person.matchStatus === 'ok' ? 'match-ok' : 'match-error';
+        const matchIcon = person.matchStatus === 'ok' ? '✓' : '⚠️';
+        const workplaceDisplay = person.workplaceType === 'headquarters' ? '🏢 본사' : '🏪 본사외';
+
+        item.innerHTML = `
+          <label style="display: flex; align-items: center; width: 100%; cursor: pointer;">
+            <input type="checkbox" ${selectedIndices.has(index) ? 'checked' : ''} data-index="${index}">
+            <span style="flex: 1;">
+              <strong>${person.name}</strong>
+              <span class="${statusClass}" style="margin-left: 10px;">${person.status === 'active' ? '재직' : '퇴사'}</span>
+              <span style="margin-left: 10px; color: #5f6368;">${workplaceDisplay}</span>
+              <span style="margin-left: 10px; color: #5f6368;">${person.startDate}</span>
+              <span class="${matchClass}" style="margin-left: 10px;">${matchIcon}</span>
+            </span>
+          </label>
+        `;
+
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        checkbox.onchange = function() {
+          if (this.checked) {
+            selectedIndices.add(index);
+          } else {
+            selectedIndices.delete(index);
+          }
+          updateSummary();
+        };
+
+        item.onclick = function(e) {
+          if (e.target.tagName !== 'INPUT') {
+            checkbox.checked = !checkbox.checked;
+            checkbox.onchange();
+          }
+        };
+
+        list.appendChild(item);
+      });
+
+      // 통계 업데이트
+      document.getElementById('totalStats').textContent =
+        `(재직: ${activeCount}명, 퇴사: ${inactiveCount}명 | 본사: ${headquartersCount}명, 본사외: ${branchCount}명)`;
+
+      console.log('📊 렌더링 결과:', {
+        전체인원: peopleData.length,
+        필터된인원: filteredCount,
+        재직: activeCount,
+        퇴사: inactiveCount,
+        본사: headquartersCount,
+        본사외: branchCount
+      });
+    }
+
+    // 요약 업데이트
+    function updateSummary() {
+      let activeCount = 0, inactiveCount = 0, matchOk = 0, matchError = 0;
+      let headquartersCount = 0, branchCount = 0;
+
+      selectedIndices.forEach(index => {
+        const person = peopleData[index];
+        if (person.status === 'active') activeCount++;
+        else inactiveCount++;
+        if (person.workplaceType === 'headquarters') headquartersCount++;
+        else branchCount++;
+        if (person.matchStatus === 'ok') matchOk++;
+        else matchError++;
+      });
+
+      document.getElementById('selectedCount').textContent = selectedIndices.size;
+      document.getElementById('activeCount').textContent = activeCount;
+      document.getElementById('inactiveCount').textContent = inactiveCount;
+      document.getElementById('headquartersCount').textContent = headquartersCount;
+      document.getElementById('branchCount').textContent = branchCount;
+      document.getElementById('matchOkCount').textContent = matchOk;
+      document.getElementById('matchErrorCount').textContent = matchError;
+
+      // 실행 버튼 활성화/비활성화
+      const btn = document.getElementById('executeBtn');
+      btn.disabled = selectedIndices.size === 0;
+      btn.textContent = `실행 (${selectedIndices.size}명)`;
+    }
+
+    // 중복 처리 확인
+    function checkDuplicates(month) {
+      google.script.run
+        .withSuccessHandler(function(duplicates) {
+          duplicateIndices = new Set(duplicates);
+
+          if (duplicates.length > 0) {
+            const names = duplicates.map(i => peopleData[i].name).join(', ');
+            document.getElementById('duplicateList').textContent = names + ' (' + month + ' 이미 처리됨)';
+            document.getElementById('duplicateWarning').style.display = 'block';
+          } else {
+            document.getElementById('duplicateWarning').style.display = 'none';
+          }
+
+          renderPeopleList();
+        })
+        .withFailureHandler(function(error) {
+          console.error('중복 확인 실패:', error);
+        })
+        .checkDuplicateProcessing(month, peopleData.map(p => p.residentId));
+    }
+
+    // 이벤트 리스너 설정
+    function setupEventListeners() {
+      // 검색
+      document.getElementById('searchInput').addEventListener('input', renderPeopleList);
+
+      // 필터
+      document.getElementById('statusFilter').addEventListener('change', renderPeopleList);
+      document.getElementById('workplaceFilter').addEventListener('change', renderPeopleList);
+      document.getElementById('matchFilter').addEventListener('change', renderPeopleList);
+
+      // 전체 선택
+      document.getElementById('selectAll').addEventListener('change', function() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const workplaceFilter = document.getElementById('workplaceFilter').value;
+        const matchFilter = document.getElementById('matchFilter').value;
+
+        if (this.checked) {
+          peopleData.forEach((person, index) => {
+            // 필터링된 항목만 선택
+            if (searchTerm && !person.name.toLowerCase().includes(searchTerm)) return;
+            if (statusFilter !== 'all' && person.status !== statusFilter) return;
+            if (workplaceFilter !== 'all' && person.workplaceType !== workplaceFilter) return;
+            if (matchFilter !== 'all' && person.matchStatus !== matchFilter) return;
+            selectedIndices.add(index);
+          });
+        } else {
+          selectedIndices.clear();
+        }
+        renderPeopleList();
+        updateSummary();
+      });
+    }
+
+    // 실행
+    function executeCalculation() {
+      const month = document.getElementById('monthSelect').value;
+      const selected = Array.from(selectedIndices);
+
+      if (selected.length === 0) {
+        alert('처리할 인원을 선택해주세요.');
+        return;
+      }
+
+      // 중복 확인
+      const hasDuplicates = selected.some(i => duplicateIndices.has(i));
+      if (hasDuplicates) {
+        if (!confirm('일부 인원은 이미 처리되었습니다. 계속 진행하시겠습니까?')) {
+          return;
+        }
+      }
+
+      // 매칭 불가 확인
+      const hasMatchErrors = selected.some(i => peopleData[i].matchStatus === 'error');
+      if (hasMatchErrors) {
+        if (!confirm('일부 인원은 보험 매칭이 불가능합니다. 계속 진행하시겠습니까?')) {
+          return;
+        }
+      }
+
+      // UI 전환
+      document.getElementById('mainUI').style.display = 'none';
+      document.getElementById('progressUI').style.display = 'block';
+
+      // 서버 실행
+      processingCanceled = false;
+      executeWithProgress(month, selected);
+    }
+
+    // 진행 상황과 함께 실행
+    function executeWithProgress(month, selectedIndices) {
+      const total = selectedIndices.length;
+      let completed = 0;
+      const errors = [];
+      const completedNames = [];
+
+      // 순차 처리 (각 사람마다 진행 상황 업데이트)
+      function processNext(index) {
+        if (processingCanceled) {
+          showResult(completedNames, errors, true);
+          return;
+        }
+
+        if (index >= selectedIndices.length) {
+          // 완료
+          showResult(completedNames, errors, false);
+          return;
+        }
+
+        const personIndex = selectedIndices[index];
+        const person = peopleData[personIndex];
+
+        // 진행 상황 업데이트
+        completed = index;
+        const percent = Math.round((completed / total) * 100);
+        document.getElementById('progressText').textContent = `${completed}/${total} (${percent}%)`;
+        document.getElementById('progressFill').style.width = percent + '%';
+        document.getElementById('currentPerson').textContent = person.name;
+        document.getElementById('currentStatus').innerHTML =
+          '✓ 급여데이터 검색<br>✓ 보험 매칭<br>⏳ 계산 중...';
+
+        // 서버 실행
+        google.script.run
+          .withSuccessHandler(function(result) {
+            completedNames.push(person.name);
+            document.getElementById('completedList').textContent = completedNames.join(', ');
+            processNext(index + 1);
+          })
+          .withFailureHandler(function(error) {
+            errors.push({ name: person.name, error: error.message });
+            document.getElementById('errorListContainer').style.display = 'block';
+            document.getElementById('errorList').textContent =
+              errors.map(e => e.name + ' - ' + e.error).join('; ');
+            processNext(index + 1);
+          })
+          .executeMonthlyPayrollForPerson(month, person.residentId);
+      }
+
+      processNext(0);
+    }
+
+    // 결과 표시
+    function showResult(completed, errors, canceled) {
+      let message = canceled ? '처리가 취소되었습니다.\n\n' : '처리 완료!\n\n';
+
+      message += `✅ 성공: ${completed.length}명\n`;
+      if (completed.length > 0) {
+        message += completed.join(', ') + '\n\n';
+      }
+
+      if (errors.length > 0) {
+        message += `❌ 실패: ${errors.length}명\n`;
+        message += errors.map(e => e.name + ' - ' + e.error).join('\n') + '\n\n';
+      }
+
+      if (!canceled && completed.length > 0) {
+        message += '월지급계산 시트에서 결과를 확인하세요.\n\n';
+        message += '📁 다음 단계:\n';
+        message += 'G:\\내 드라이브\\2. 법인컨설팅\\해림씨앤피\\재무관리\\급여관리\\위하고 업로드 양식\\주식회사 해림씨앤피-급여업로드양식.xlsx\n\n';
+        message += '위 파일을 위하고 급여입력에서 엑셀 불러오기를 실행하세요.';
+      }
+
+      alert(message);
+
+      // 3초 후 자동 닫기
+      setTimeout(function() {
+        google.script.host.close();
+      }, 3000);
+    }
+
+    // 취소
+    function cancelExecution() {
+      if (confirm('처리를 취소하시겠습니까?')) {
+        processingCanceled = true;
+      }
+    }
+  </script>
+</body>
+</html>

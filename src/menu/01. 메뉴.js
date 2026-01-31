@@ -42,11 +42,19 @@ function onOpen() {
       .addItem('거래Backup 열기/숨기기', 'toggleTransactionBackupSheetVisibility') 
       .addToUi(); 
       
-  // 3. '급여 관리' 메뉴 정의 (기존 유지)
+  // 3. '급여 관리' 메뉴 정의
   ui.createMenu('급여 관리')
-      .addItem('0. 통합 급여 처리', 'payrollmanagement') 
+      .addItem('0. 통합 급여 처리', 'payrollmanagement')
+      .addSeparator()
       .addItem('1. 건강보험 처리', 'calculateAndPopulateHealthInsuranceData')
-      .addItem('2. 국민연금 처리', 'calculateAndPopulateNationalPensionData') 
-      .addItem('3. 월지급 계산', 'matchAllPayrollData_V6') 
+      .addItem('2. 국민연금 처리', 'calculateAndPopulateNationalPensionData')
+      .addItem('3. 고용보험 처리', 'calculateAndPopulateEmploymentInsuranceData')
+      .addSeparator()
+      .addItem('4. 월지급 계산', 'showMonthlyPayrollUI')  // v2.0 UI 사용
+      .addSubMenu(ui.createMenu('5. 위하고 업로드')
+          .addItem('파일 업데이트', 'updateWihagoUploadFile')  // 월지급더존업로드 → 위하고 업로드 파일
+          .addItem('Excel 파일 찾기', 'findWihagoExcelFile'))  // 생성된 Excel 파일 위치 확인
+      .addItem('6. 월지급DB 저장', 'showSavePayrollDBUI')  // 더존 다운로드 → 월지급DB
+      .addItem('7. 대량이체 등록', 'showBulkTransferUI')   // 월지급DB → 대량이체
       .addToUi();
 }

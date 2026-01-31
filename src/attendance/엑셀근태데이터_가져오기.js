@@ -43,6 +43,16 @@ function formatWorkingTime(value) {
     return hours + ':' + minutes;
   }
 
+  // "X시간 YY분" 형식인 경우 (예: "9시간 03분" → "09:03")
+  if (typeof value === 'string') {
+    const koreanMatch = value.match(/(\d+)시간\s*(\d+)분/);
+    if (koreanMatch) {
+      const hours = koreanMatch[1].padStart(2, '0');
+      const minutes = koreanMatch[2].padStart(2, '0');
+      return hours + ':' + minutes;
+    }
+  }
+
   // 이미 HH:MM 형식인 경우
   if (typeof value === 'string' && /^\d{1,2}:\d{2}/.test(value)) {
     const parts = value.split(':');
@@ -200,7 +210,7 @@ function importAttendanceFromExcel() {
       }
 
       // 모든 데이터 읽기
-      const allData = sourceSheet.getRange(1, 1, lastRow, lastCol).getValues();
+      const allData = sourceSheet.getRange(1, 1, lastRow, lastCol).getDisplayValues();
 
       // 6. 데이터 처리: 1행(헤더)과 3행 이후만 사용, 2행 건너뜀
       const processedData = [];

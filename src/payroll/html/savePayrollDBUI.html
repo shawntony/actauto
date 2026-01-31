@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    /* 전역 스타일 */
+    body {
+      font-family: 'Google Sans', Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      font-size: 14px;
+      color: #202124;
+    }
+
+    /* 섹션 스타일 */
+    .section {
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #1a73e8;
+    }
+
+    /* 입력 필드 */
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    #monthInput {
+      flex: 1;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+    }
+    .btn-secondary {
+      padding: 8px 16px;
+      background: #fff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #1a73e8;
+      font-weight: 500;
+    }
+    .btn-secondary:hover {
+      background: #f8f9fa;
+    }
+
+    /* 검색 및 필터 */
+    .filter-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    #searchInput {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .btn-icon {
+      padding: 8px 16px;
+      background: #fff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn-icon:hover {
+      background: #f8f9fa;
+    }
+
+    /* 사람 목록 */
+    .people-list {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      background: #fff;
+    }
+    .person-item {
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .person-item:hover:not(.duplicate) {
+      background: #f8f9fa;
+    }
+    .person-item:last-child {
+      border-bottom: none;
+    }
+    .person-item.duplicate {
+      background: #fff3cd;
+      cursor: not-allowed;
+    }
+
+    /* 체크박스 */
+    input[type="checkbox"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    input[type="checkbox"]:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    /* 정보 표시 */
+    .person-info {
+      flex: 1;
+    }
+    .person-name {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .person-details {
+      font-size: 13px;
+      color: #5f6368;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 10px;
+    }
+    .badge-duplicate {
+      background: #f59e0b;
+      color: #fff;
+    }
+    .badge-new {
+      background: #10b981;
+      color: #fff;
+    }
+
+    /* 통계 표시 */
+    .stats {
+      display: flex;
+      gap: 15px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+    .stat-item {
+      flex: 1;
+    }
+    .stat-label {
+      color: #5f6368;
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: #202124;
+    }
+    .stat-value.highlight {
+      color: #1a73e8;
+    }
+
+    /* 버튼 */
+    .button-group {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 24px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: #1a73e8;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #1557b0;
+    }
+    .btn-primary:disabled {
+      background: #dadce0;
+      cursor: not-allowed;
+    }
+    .btn-cancel {
+      background: #fff;
+      color: #5f6368;
+      border: 1px solid #dadce0;
+    }
+    .btn-cancel:hover {
+      background: #f8f9fa;
+    }
+
+    /* 로딩 및 메시지 */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #5f6368;
+    }
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #1a73e8;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #5f6368;
+    }
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <!-- 급여기준월 입력 -->
+  <div class="section">
+    <div class="section-title">📅 급여기준월</div>
+    <div class="input-group">
+      <input type="date" id="monthInput" placeholder="YYYY-MM-DD">
+      <button class="btn-secondary" onclick="loadData()">불러오기</button>
+    </div>
+  </div>
+
+  <!-- 검색 및 필터 -->
+  <div class="section" id="filterSection" style="display: none;">
+    <div class="filter-container">
+      <input type="text" id="searchInput" placeholder="이름 검색..." onkeyup="filterPeople()">
+      <button class="btn-icon" onclick="selectAll()">전체선택</button>
+      <button class="btn-icon" onclick="deselectAll()">전체해제</button>
+    </div>
+  </div>
+
+  <!-- 통계 -->
+  <div class="section" id="statsSection" style="display: none;">
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-label">선택</div>
+        <div class="stat-value highlight" id="selectedCount">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">중복</div>
+        <div class="stat-value" id="duplicateCount">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">신규</div>
+        <div class="stat-value" id="newCount">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 직원 목록 -->
+  <div class="section">
+    <div class="section-title">👥 더존 다운로드 데이터</div>
+    <div class="people-list" id="peopleList">
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <div>급여기준월을 선택하고 불러오기 버튼을 클릭하세요.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 버튼 그룹 -->
+  <div class="button-group">
+    <button class="btn btn-cancel" onclick="google.script.host.close()">취소</button>
+    <button class="btn btn-primary" id="saveButton" onclick="saveData()" disabled>저장</button>
+  </div>
+
+  <script>
+    // 전역 변수
+    let allPeople = [];
+    let selectedMonth = '';
+
+    /**
+     * 날짜 입력 기본값 설정 (이번 달 말일)
+     */
+    function initializeDateInput() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1;
+      const lastDay = new Date(year, month, 0).getDate();
+      const monthLastDay = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+      document.getElementById('monthInput').value = monthLastDay;
+    }
+
+    /**
+     * 데이터 불러오기
+     */
+    function loadData() {
+      const month = document.getElementById('monthInput').value;
+
+      if (!month) {
+        alert('급여기준월을 선택하세요.');
+        return;
+      }
+
+      selectedMonth = month;
+
+      // 로딩 표시
+      showLoading();
+
+      // 서버에서 데이터 가져오기
+      google.script.run
+        .withSuccessHandler(onDataLoaded)
+        .withFailureHandler(onError)
+        .readDazoneDownloadData(month);
+    }
+
+    /**
+     * 로딩 표시
+     */
+    function showLoading() {
+      document.getElementById('peopleList').innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <div>데이터를 불러오는 중...</div>
+        </div>
+      `;
+    }
+
+    /**
+     * 데이터 로드 완료
+     */
+    function onDataLoaded(result) {
+      if (!result.success) {
+        alert(result.error || '데이터를 불러올 수 없습니다.');
+        showEmptyState();
+        return;
+      }
+
+      // 중복 체크
+      google.script.run
+        .withSuccessHandler(onDuplicateCheckComplete)
+        .withFailureHandler(onError)
+        .checkBulkDuplicates(selectedMonth, result.data);
+    }
+
+    /**
+     * 중복 체크 완료
+     */
+    function onDuplicateCheckComplete(people) {
+      allPeople = people;
+      renderPeople(people);
+      updateStats();
+
+      // UI 표시
+      document.getElementById('filterSection').style.display = 'block';
+      document.getElementById('statsSection').style.display = 'block';
+    }
+
+    /**
+     * 직원 목록 렌더링
+     */
+    function renderPeople(people) {
+      const listContainer = document.getElementById('peopleList');
+
+      if (!people || people.length === 0) {
+        showEmptyState();
+        return;
+      }
+
+      const html = people.map((person, index) => {
+        const isDuplicate = person.status === 'duplicate';
+        const itemClass = isDuplicate ? 'person-item duplicate' : 'person-item';
+        const checkboxDisabled = isDuplicate ? 'disabled' : '';
+        const badgeClass = isDuplicate ? 'badge-duplicate' : 'badge-new';
+        const badgeText = isDuplicate ? '⚠ 중복' : '✓ 신규';
+
+        return `
+          <div class="${itemClass}" data-index="${index}" onclick="togglePerson(${index})">
+            <input type="checkbox"
+                   id="person_${index}"
+                   data-index="${index}"
+                   ${checkboxDisabled}
+                   ${!isDuplicate ? 'onclick="event.stopPropagation(); updateStats()"' : ''}>
+            <div class="person-info">
+              <div class="person-name">
+                ${person.name}
+                <span class="badge ${badgeClass}">${badgeText}</span>
+              </div>
+              <div class="person-details">
+                💰 ${person.netPay.toLocaleString()}원
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      listContainer.innerHTML = html;
+    }
+
+    /**
+     * 빈 상태 표시
+     */
+    function showEmptyState() {
+      document.getElementById('peopleList').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🔍</div>
+          <div>데이터가 없습니다.</div>
+        </div>
+      `;
+    }
+
+    /**
+     * 체크박스 토글
+     */
+    function togglePerson(index) {
+      const checkbox = document.getElementById(`person_${index}`);
+      if (checkbox && !checkbox.disabled) {
+        checkbox.checked = !checkbox.checked;
+        updateStats();
+      }
+    }
+
+    /**
+     * 통계 업데이트
+     */
+    function updateStats() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]:not([disabled])');
+      const selected = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+      const duplicateCount = allPeople.filter(p => p.status === 'duplicate').length;
+      const newCount = allPeople.filter(p => p.status === 'new').length;
+
+      document.getElementById('selectedCount').textContent = selected;
+      document.getElementById('duplicateCount').textContent = duplicateCount;
+      document.getElementById('newCount').textContent = newCount;
+
+      // 저장 버튼 활성화/비활성화
+      document.getElementById('saveButton').disabled = selected === 0;
+      document.getElementById('saveButton').textContent = selected > 0 ? `저장 (${selected}명)` : '저장';
+    }
+
+    /**
+     * 전체 선택
+     */
+    function selectAll() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]:not([disabled])');
+      checkboxes.forEach(cb => cb.checked = true);
+      updateStats();
+    }
+
+    /**
+     * 전체 해제
+     */
+    function deselectAll() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]:not([disabled])');
+      checkboxes.forEach(cb => cb.checked = false);
+      updateStats();
+    }
+
+    /**
+     * 검색 필터
+     */
+    function filterPeople() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+      if (!searchTerm) {
+        renderPeople(allPeople);
+        return;
+      }
+
+      const filtered = allPeople.filter(person =>
+        person.name.toLowerCase().includes(searchTerm)
+      );
+
+      renderPeople(filtered);
+    }
+
+    /**
+     * 데이터 저장
+     */
+    function saveData() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked:not([disabled])');
+
+      if (checkboxes.length === 0) {
+        alert('저장할 직원을 선택하세요.');
+        return;
+      }
+
+      // 선택된 데이터 수집
+      const selectedData = Array.from(checkboxes).map(cb => {
+        const index = parseInt(cb.dataset.index);
+        return {
+          name: allPeople[index].name,
+          data: allPeople[index].data
+        };
+      });
+
+      // 확인 메시지
+      if (!confirm(`${selectedData.length}명의 데이터를 월지급DB에 저장하시겠습니까?`)) {
+        return;
+      }
+
+      // 저장 중 표시
+      document.getElementById('saveButton').disabled = true;
+      document.getElementById('saveButton').textContent = '저장 중...';
+
+      // 서버 호출
+      google.script.run
+        .withSuccessHandler(onSaveComplete)
+        .withFailureHandler(onError)
+        .saveToPayrollDBFromDazone(selectedMonth, selectedData);
+    }
+
+    /**
+     * 저장 완료
+     */
+    function onSaveComplete(result) {
+      if (!result.success) {
+        alert('저장 실패: ' + (result.error || '알 수 없는 오류'));
+        document.getElementById('saveButton').disabled = false;
+        document.getElementById('saveButton').textContent = '저장';
+        return;
+      }
+
+      const summary = result.summary;
+      const message = `
+저장 완료!
+
+✅ 저장: ${summary.savedCount}명
+⚠️ 중복: ${summary.duplicateCount}명
+❌ 오류: ${summary.errorCount}명
+🗑️ 월급여더존다운로드 삭제: ${summary.deletedRows || 0}행
+      `.trim();
+
+      alert(message);
+      google.script.host.close();
+    }
+
+    /**
+     * 오류 처리
+     */
+    function onError(error) {
+      alert('오류 발생: ' + error.message);
+      document.getElementById('saveButton').disabled = false;
+      document.getElementById('saveButton').textContent = '저장';
+    }
+
+    // 초기화
+    initializeDateInput();
+  </script>
+</body>
+</html>

@@ -1,16 +1,52 @@
 {
   "permissions": {
     "allow": [
-      "mcp__serena__list_dir",
-      "mcp__serena__search_for_pattern",
-      "Bash(node:*)",
-      "Bash(npx clasp push:*)",
+      "Bash(npm run deploy:all:*)",
+      "Bash(node scripts/create-new-environment.js:*)",
+      "Bash(node scripts/create-environment-config.js:*)",
+      "Bash(node scripts/complete-environment-setup.js:*)",
+      "Bash(npm run deploy:all:bnbk:*)",
+      "Bash(npm run deploy:*)",
+      "Bash(npm run sync:environments:*)",
+      "Bash(npx tsx:*)",
       "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(npm run env:list:*)",
+      "Bash(node:*)",
+      "mcp__google-sheets__sheets_get_values",
+      "Bash(npm run deploy:bnbk:*)",
+      "Bash(npm run:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: 엑셀 근태 데이터 가져오기 기능 및 Drive API 설정\n\n- src/attendance/엑셀근태데이터_가져오기.js 추가\n  - Google Drive 폴더에서 엑셀 파일 읽어 근태기록 시트로 복사\n  - 출근시간/퇴근시간/일근무시간 HH:MM 포맷 적용\n  - 적용년월\\(yyyy-mm\\) 자동 추출 기능\n  - 조직명에서 [현장] 텍스트 자동 제거\n- src/appsscript.json 수정\n  - Drive API Advanced Service 설정 추가 \\(영구 설정\\)\n  - 타임존 Asia/Seoul 설정\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push)",
+      "Bash(powershell -Command:*)",
+      "Bash(clasp push:*)",
+      "Bash(clasp status:*)",
+      "Bash(clasp pull:*)",
+      "Bash(clasp open:*)",
       "Bash(dir:*)",
-      "Bash(npm install:*)",
-      "Bash(npx tsx:*)"
+      "Bash(grep:*)",
+      "Bash(timeout /t 30 /nobreak)",
+      "Bash(ping:*)",
+      "mcp__google-sheets__sheets_get_metadata",
+      "Bash(npx clasp push)",
+      "Bash(npx clasp push:*)",
+      "Bash(copy:*)",
+      "Bash(findstr:*)",
+      "mcp__google-sheets__sheets_batch_get_values",
+      "Bash(find:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase",
+    "context7",
+    "github",
+    "playwright",
+    "serena",
+    "notionApi"
+  ]
 }
