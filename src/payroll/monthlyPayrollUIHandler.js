@@ -326,8 +326,8 @@ function executeMonthlyPayrollForPerson(month, residentId) {
 
   Logger.log('[executeMonthlyPayrollForPerson] 처리 시작: ' + month + ' → ' + monthLastDay + ', ' + employeeData.name);
 
-  // 2. 보험 데이터 매칭 (변환된 월 사용)
-  const insuranceData = matchInsuranceData(sheets, monthLastDay, residentId);
+  // 2. 보험 데이터 매칭 (변환된 월 사용, 이름 포함)
+  const insuranceData = matchInsuranceData(sheets, monthLastDay, residentId, employeeData.name);
 
   // 3. 소득세 계산 (간이세액표 또는 기본 로직)
   const taxData = calculateIncomeTax(employeeData.totalSalary, insuranceData);
@@ -367,12 +367,13 @@ function getEmployeeDataFromPayroll(sheet, residentId) {
     const rowResidentId = String(row[2]).trim();  // C열
 
     if (rowResidentId === residentId) {
-      // 급여데이터 시트 실제 구조 (2026-01-30 확인)
+      // 급여데이터 시트 실제 구조 (2026-02-10 업데이트)
       // A=사번, B=근무자명, C=주민등록번호, D=근무위치, E=근무조, F=계약시작일, G=계약종료일
-      // J(9)=기본급, K(10)=직책수당, L(11)=식대수당, M(12)=연장근로수당
-      // N(13)=연차수당, O(14)=야간수당, P(15)=공휴일특근수당, Q(16)=기타수당
-      // R(17)=합계금액, AF(31)=급여 지급 은행, AG(32)=계좌 번호
-      // ⚠️ 상여 열은 급여데이터에 없음 (월지급계산에만 존재)
+      // W(22)=실_기본급, X(23)=실_직책수당, Y(24)=실_식대수당, Z(25)=실_연장근로수당
+      // AA(26)=실_연차수당, AB(27)=실_야간수당, AC(28)=실_공휴일특근수당, AD(29)=실_기타수당
+      // AE(30)=실_월지급액, AI(34)=급여 지급 은행, AJ(35)=계좌 번호
+      // ⚠️ 상여 열은 급여데이터에 없음 (월지급계산에서 직접 입력 필요)
+      // ⚠️ 기존 J~R열(기본급)이 아닌 W~AE열(실_기본급) 사용 - 미근무시간 차감 후 실제 지급액
 
       return {
         rowIndex: i,
@@ -383,19 +384,19 @@ function getEmployeeDataFromPayroll(sheet, residentId) {
         workShift: row[4] || '',  // E열: 근무조
         contractStart: row[5] || '',  // F열: 계약시작일
         contractEnd: row[6] || '',  // G열: 계약종료일
-        bank: row[31] || '',  // AF열: 급여 지급 은행
-        accountNumber: row[32] || '',  // AG열: 계좌 번호
-        // 급여 항목
-        basicSalary: row[9] || 0,  // J열: 기본급
+        bank: row[34] || '',  // AI열: 급여 지급 은행
+        accountNumber: row[35] || '',  // AJ열: 계좌 번호
+        // 급여 항목 (실제 지급액)
+        basicSalary: row[22] || 0,  // W열: 실_기본급
         bonus: 0,  // ⚠️ 급여데이터에 없음, 월지급계산에서 직접 입력 필요
-        positionAllowance: row[10] || 0,  // K열: 직책수당
-        mealAllowance: row[11] || 0,  // L열: 식대수당
-        overtimeAllowance: row[12] || 0,  // M열: 연장근로수당
-        annualAllowance: row[13] || 0,  // N열: 연차수당
-        nightAllowance: row[14] || 0,  // O열: 야간수당
-        holidayAllowance: row[15] || 0,  // P열: 공휴일특근수당
-        otherAllowance: row[16] || 0,  // Q열: 기타수당
-        totalSalary: row[17] || 0  // R열: 합계금액
+        positionAllowance: row[23] || 0,  // X열: 실_직책수당
+        mealAllowance: row[24] || 0,  // Y열: 실_식대수당
+        overtimeAllowance: row[25] || 0,  // Z열: 실_연장근로수당
+        annualAllowance: row[26] || 0,  // AA열: 실_연차수당
+        nightAllowance: row[27] || 0,  // AB열: 실_야간수당
+        holidayAllowance: row[28] || 0,  // AC열: 실_공휴일특근수당
+        otherAllowance: row[29] || 0,  // AD열: 실_기타수당
+        totalSalary: row[30] || 0  // AE열: 실_월지급액
       };
     }
   }
@@ -404,9 +405,14 @@ function getEmployeeDataFromPayroll(sheet, residentId) {
 }
 
 /**
- * 보험 데이터 매칭
+ * 보험 데이터 매칭 (이름 + 생년월일 조합)
+ * @param {Object} sheets - 보험 시트 객체
+ * @param {string} month - 매칭할 월 (YYYY-MM-DD)
+ * @param {string} residentId - 주민등록번호
+ * @param {string} name - 근로자명
+ * @returns {Object} 보험료 데이터
  */
-function matchInsuranceData(sheets, month, residentId) {
+function matchInsuranceData(sheets, month, residentId, name) {
   const idKey = extractResidentIdKey(residentId);
 
   const insuranceData = {
@@ -423,6 +429,7 @@ function matchInsuranceData(sheets, month, residentId) {
     sheets.nationalPension,
     month,
     idKey,
+    name,
     INSURANCE_SHEET_SCHEMAS.국민연금
   );
 
@@ -431,6 +438,7 @@ function matchInsuranceData(sheets, month, residentId) {
     sheets.healthInsurance,
     month,
     idKey,
+    name,
     INSURANCE_SHEET_SCHEMAS.건강보험
   );
   insuranceData.healthInsurance = healthData.HEALTH_INSURANCE || 0;
@@ -441,6 +449,7 @@ function matchInsuranceData(sheets, month, residentId) {
     sheets.employmentInsurance,
     month,
     idKey,
+    name,
     INSURANCE_SHEET_SCHEMAS.고용보험
   );
   insuranceData.employmentInsurance = employmentData.EMPLOYEE_INSURANCE || 0;
@@ -451,9 +460,11 @@ function matchInsuranceData(sheets, month, residentId) {
     sheets.workAccident,
     month,
     idKey,
+    name,
     INSURANCE_SHEET_SCHEMAS.산재보험
   );
 
+  Logger.log('[보험 매칭] ' + name + ' (생년월일: ' + idKey + ')');
   Logger.log('[보험 매칭] 국민연금: ' + insuranceData.nationalPension +
              ', 건강: ' + insuranceData.healthInsurance +
              ', 고용: ' + insuranceData.employmentInsurance);
@@ -462,42 +473,60 @@ function matchInsuranceData(sheets, month, residentId) {
 }
 
 /**
- * 보험 시트에서 단일 값 찾기
+ * 보험 시트에서 단일 값 찾기 (이름 + 생년월일 매칭)
+ * @param {Sheet} sheet - 보험 시트
+ * @param {string} month - 매칭할 월 (YYYY-MM-DD)
+ * @param {string} idKey - 주민번호 앞 6자리
+ * @param {string} name - 근로자명
+ * @param {Object} schema - 보험 시트 스키마
+ * @returns {number} 보험료 금액
  */
-function findInsuranceValue(sheet, month, idKey, schema) {
+function findInsuranceValue(sheet, month, idKey, name, schema) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return 0;
 
   const idColIndex = columnLetterToIndex(schema.MATCHING_COLUMNS.RESIDENT_ID);
+  const nameColIndex = columnLetterToIndex(schema.MATCHING_COLUMNS.NAME);
   const dataCol = Object.values(schema.DATA_COLUMNS)[0];
   const dataColIndex = columnLetterToIndex(dataCol);
-  const maxCol = Math.max(idColIndex, dataColIndex) + 1;
+  const maxCol = Math.max(idColIndex, nameColIndex, dataColIndex) + 1;
 
   const data = sheet.getRange(2, 1, lastRow - 1, maxCol).getValues();
 
   for (const row of data) {
     const monthValue = String(row[0]).trim();
     const rowIdKey = extractResidentIdKey(String(row[idColIndex]));
+    const rowName = String(row[nameColIndex]).trim();
 
-    if (monthValue === month && rowIdKey === idKey) {
+    // 월 + 생년월일 + 이름으로 매칭
+    if (monthValue === month && rowIdKey === idKey && rowName === name) {
       return row[dataColIndex] || 0;
     }
   }
 
+  // 매칭 실패 시 로그
+  Logger.log('[경고] 매칭 실패 (' + schema.SHEET_NAME + '): ' + name + ', ' + idKey + ', ' + month);
   return 0;
 }
 
 /**
- * 보험 시트에서 여러 값 찾기
+ * 보험 시트에서 여러 값 찾기 (이름 + 생년월일 매칭)
+ * @param {Sheet} sheet - 보험 시트
+ * @param {string} month - 매칭할 월 (YYYY-MM-DD)
+ * @param {string} idKey - 주민번호 앞 6자리
+ * @param {string} name - 근로자명
+ * @param {Object} schema - 보험 시트 스키마
+ * @returns {Object} 보험료 데이터 객체
  */
-function findInsuranceValues(sheet, month, idKey, schema) {
+function findInsuranceValues(sheet, month, idKey, name, schema) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return {};
 
   const idColIndex = columnLetterToIndex(schema.MATCHING_COLUMNS.RESIDENT_ID);
+  const nameColIndex = columnLetterToIndex(schema.MATCHING_COLUMNS.NAME);
   const dataColumns = schema.DATA_COLUMNS;
   const dataColIndices = {};
-  let maxCol = idColIndex;
+  let maxCol = Math.max(idColIndex, nameColIndex);
 
   for (const [key, col] of Object.entries(dataColumns)) {
     const colIndex = columnLetterToIndex(col);
@@ -510,8 +539,10 @@ function findInsuranceValues(sheet, month, idKey, schema) {
   for (const row of data) {
     const monthValue = String(row[0]).trim();
     const rowIdKey = extractResidentIdKey(String(row[idColIndex]));
+    const rowName = String(row[nameColIndex]).trim();
 
-    if (monthValue === month && rowIdKey === idKey) {
+    // 월 + 생년월일 + 이름으로 매칭
+    if (monthValue === month && rowIdKey === idKey && rowName === name) {
       const result = {};
       for (const [key, colIndex] of Object.entries(dataColIndices)) {
         result[key] = row[colIndex] || 0;
@@ -520,6 +551,8 @@ function findInsuranceValues(sheet, month, idKey, schema) {
     }
   }
 
+  // 매칭 실패 시 로그
+  Logger.log('[경고] 매칭 실패 (' + schema.SHEET_NAME + '): ' + name + ', ' + idKey + ', ' + month);
   return {};
 }
 

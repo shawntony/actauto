@@ -10,12 +10,13 @@ const INSURANCE_SHEET_SCHEMAS = {
     MATCHING_COLUMNS: {
       MONTH: 'A',           // 월 (필터 조건)
       RESIDENT_ID: 'D',     // 주민번호 ✓ (확인됨)
-      RESIDENT_ID_KEY: 'D'  // 주민번호 앞 6자리 추출용
+      RESIDENT_ID_KEY: 'D', // 주민번호 앞 6자리 추출용
+      NAME: 'E'             // 가입자명 (E열)
     },
     DATA_COLUMNS: {
       PENSION_AMOUNT: 'I'   // 국민연금액
     },
-    DESCRIPTION: '국민연금 시트 - D열(주민번호)로 매칭, I열(국민연금액) 추출'
+    DESCRIPTION: '국민연금 시트 - D열(주민번호) + E열(가입자명)으로 매칭, I열(국민연금액) 추출'
   },
 
   건강보험: {
@@ -23,13 +24,14 @@ const INSURANCE_SHEET_SCHEMAS = {
     MATCHING_COLUMNS: {
       MONTH: 'A',           // 월 (필터 조건)
       RESIDENT_ID: 'D',     // 주민번호 ✓ (확인됨)
-      RESIDENT_ID_KEY: 'D'  // 주민번호 앞 6자리 추출용
+      RESIDENT_ID_KEY: 'D', // 주민번호 앞 6자리 추출용
+      NAME: 'E'             // 성명 (E열)
     },
     DATA_COLUMNS: {
       HEALTH_INSURANCE: 'O',   // 건강보험료 (15번째 컬럼)
       LONG_TERM_CARE: 'AB'     // 장기요양보험료 (28번째 컬럼)
     },
-    DESCRIPTION: '건강보험 시트 - D열(주민번호)로 매칭, O열(건강보험료), AB열(장기요양보험료) 추출'
+    DESCRIPTION: '건강보험 시트 - D열(주민번호) + E열(성명)으로 매칭, O열(건강보험료), AB열(장기요양보험료) 추출'
   },
 
   고용보험: {
@@ -53,12 +55,12 @@ const INSURANCE_SHEET_SCHEMAS = {
       MONTH: 'A',           // 월 (필터 조건)
       RESIDENT_ID: 'D',     // 주민번호 (건강보험과 동일 추정)
       RESIDENT_ID_KEY: 'D', // 주민번호 앞 6자리 추출용
-      NAME: 'D'             // 근로자명 (참고용)
+      NAME: 'E'             // 근로자명 (E열)
     },
     DATA_COLUMNS: {
       INDUSTRIAL_ACCIDENT: 'O'  // 산재보험료 (15번째 컬럼)
     },
-    DESCRIPTION: '산재보험 시트 - D열(주민번호)로 매칭, O열(산재보험료) 추출'
+    DESCRIPTION: '산재보험 시트 - D열(주민번호) + E열(근로자명)으로 매칭, O열(산재보험료) 추출'
   }
 };
 
